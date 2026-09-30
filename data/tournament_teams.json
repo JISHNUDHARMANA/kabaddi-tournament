@@ -1,0 +1,140 @@
+[
+  {
+    "id": "team_patna",
+    "name": "Patna Warriors",
+    "short": "PAT",
+    "city": "Patna",
+    "color": "#FF6B00",
+    "captain": "Sachin Tanwar",
+    "coach": "Ram Mehar Singh",
+    "players": [
+      { "id": "A1", "name": "Sachin Tanwar", "jersey": "1", "role": "Raider", "isCaptain": true },
+      { "id": "A2", "name": "Manjeet Dahiya", "jersey": "2", "role": "Raider" },
+      { "id": "A3", "name": "Neeraj Kumar", "jersey": "3", "role": "Defender" },
+      { "id": "A4", "name": "Sunil Kumar", "jersey": "4", "role": "Defender" },
+      { "id": "A5", "name": "Mohit Goyat", "jersey": "5", "role": "All-Rounder" },
+      { "id": "A6", "name": "Sajin C.", "jersey": "6", "role": "Defender" },
+      { "id": "A7", "name": "Shubham Shinde", "jersey": "7", "role": "Defender" }
+    ],
+    "substitutes": [
+      { "id": "AS1", "name": "Rohit Gulia", "jersey": "21", "role": "Raider" },
+      { "id": "AS2", "name": "Monu Goyat", "jersey": "22", "role": "Raider" },
+      { "id": "AS3", "name": "Vikas Jaglan", "jersey": "24", "role": "All-Rounder" }
+    ]
+  },
+  {
+    "id": "team_bengal",
+    "name": "Bengal Tigers",
+    "short": "BEN",
+    "city": "Kolkata",
+    "color": "#00B4D8",
+    "captain": "Maninder Singh",
+    "coach": "K. Baskaran",
+    "players": [
+      { "id": "B1", "name": "Maninder Singh", "jersey": "9", "role": "Raider", "isCaptain": true },
+      { "id": "B2", "name": "Shrikant Jadhav", "jersey": "10", "role": "Raider" },
+      { "id": "B3", "name": "Vaibhav Garje", "jersey": "11", "role": "Defender" },
+      { "id": "B4", "name": "Jaskirat Singh", "jersey": "12", "role": "Defender" },
+      { "id": "B5", "name": "Nitin Rawal", "jersey": "13", "role": "All-Rounder" },
+      { "id": "B6", "name": "Darshan J.", "jersey": "14", "role": "Defender" },
+      { "id": "B7", "name": "Shubham Kumar", "jersey": "15", "role": "Defender" }
+    ],
+    "substitutes": [
+      { "id": "BS1", "name": "Akshay Kumar", "jersey": "25", "role": "Defender" },
+      { "id": "BS2", "name": "Suyog Gaikar", "jersey": "27", "role": "Raider" },
+      { "id": "BS3", "name": "Hem Raj", "jersey": "29", "role": "All-Rounder" }
+    ]
+  },
+  {
+    "id": "team_mumbai",
+    "name": "Mumbai Warriors",
+    "short": "MUM",
+    "city": "Mumbai",
+    "color": "#FF5722",
+    "captain": "Guman Singh",
+    "coach": "Gholamreza Mazandarani",
+    "players": [
+      { "id": "M1", "name": "Guman Singh", "jersey": "1", "role": "Raider", "isCaptain": true },
+      { "id": "M2", "name": "Jai Bhagwan", "jersey": "2", "role": "Raider" },
+      { "id": "M3", "name": "Surinder Singh", "jersey": "3", "role": "Defender" },
+      { "id": "M4", "name": "Rinku Sharma", "jersey": "4", "role": "Defender" },
+      { "id": "M5", "name": "Visvanath V.", "jersey": "5", "role": "All-Rounder" },
+      { "id": "M6", "name": "Mahender Singh", "jersey": "6", "role": "Defender" },
+      { "id": "M7", "name": "Sombir Goswami", "jersey": "7", "role": "Defender" }
+    ],
+    "substitutes": [
+      { "id": "MS1", "name": "Shivansh Thakur", "jersey": "18", "role": "Defender" },
+      { "id": "MS2", "name": "Heidarali Ekrami", "jersey": "20", "role": "Raider" },
+      { "id": "MS3", "name": "Pranay Rane", "jersey": "22", "role": "Raider" }
+    ]
+  },
+  {
+    "id": "team_bengaluru",
+    "name": "Bengaluru Bulls",
+    "short": "BLR",
+    "city": "Bengaluru",
+    "color": "#DC2626",
+    "captain": "Bharat Hooda",
+    "coach": "Randhir Singh Sehrawat",
+    "players": [
+      { "id": "BB1", "name": "Bharat Hooda", "jersey": "1", "role": "Raider", "isCaptain": true },
+      { "id": "BB2", "name": "Vikash Kandola", "jersey": "2", "role": "Raider" },
+      { "id": "BB3", "name": "Saurabh Nandal", "jersey": "3", "role": "Defender" },
+      { "id": "BB4", "name": "Aman Antil", "jersey": "4", "role": "Defender" },
+      { "id": "BB5", "name": "Neeraj Narwal", "jersey": "5", "role": "All-Rounder" },
+      { "id": "BB6", "name": "Yash Hooda", "jersey": "6", "role": "Defender" },
+      { "id": "BB7", "name": "Surjeet Singh", "jersey": "7", "role": "Defender" }
+    ],
+    "substitutes": [
+      { "id": "BBS1", "name": "Abhishek Singh", "jersey": "19", "role": "Raider" },
+      { "id": "BBS2", "name": "Piotr Pamulak", "jersey": "21", "role": "Raider" },
+      { "id": "BBS3", "name": "Ponparthiban S.", "jersey": "23", "role": "Defender" }
+    ]
+  },
+  {
+    "id": "team_jaipur",
+    "name": "Jaipur Panthers",
+    "short": "JAI",
+    "city": "Jaipur",
+    "color": "#EC4899",
+    "captain": "Arjun Deshwal",
+    "coach": "Sanjeev Baliyan",
+    "players": [
+      { "id": "J1", "name": "Arjun Deshwal", "jersey": "1", "role": "Raider", "isCaptain": true },
+      { "id": "J2", "name": "Ajith Kumar", "jersey": "2", "role": "Raider" },
+      { "id": "J3", "name": "Sunil Kumar", "jersey": "3", "role": "Defender" },
+      { "id": "J4", "name": "Sahul Kumar", "jersey": "4", "role": "Defender" },
+      { "id": "J5", "name": "Ankush Rathee", "jersey": "5", "role": "Defender" },
+      { "id": "J6", "name": "Reza Mirbagheri", "jersey": "6", "role": "Defender" },
+      { "id": "J7", "name": "Abhishek KS", "jersey": "7", "role": "Defender" }
+    ],
+    "substitutes": [
+      { "id": "JS1", "name": "Bhavani Rajput", "jersey": "20", "role": "Raider" },
+      { "id": "JS2", "name": "Navneet", "jersey": "22", "role": "Raider" },
+      { "id": "JS3", "name": "Lucky Sharma", "jersey": "24", "role": "Defender" }
+    ]
+  },
+  {
+    "id": "team_tamil",
+    "name": "Tamil Thalas",
+    "short": "TAM",
+    "city": "Chennai",
+    "color": "#EAB308",
+    "captain": "Sagar Rathee",
+    "coach": "Ashan Kumar",
+    "players": [
+      { "id": "T1", "name": "Sagar Rathee", "jersey": "1", "role": "Defender", "isCaptain": true },
+      { "id": "T2", "name": "Narender Hoshiyar", "jersey": "2", "role": "Raider" },
+      { "id": "T3", "name": "Ajinkya Pawar", "jersey": "3", "role": "Raider" },
+      { "id": "T4", "name": "Sahil Gulia", "jersey": "4", "role": "Defender" },
+      { "id": "T5", "name": "Mohit", "jersey": "5", "role": "Defender" },
+      { "id": "T6", "name": "M. Abhishek", "jersey": "6", "role": "Defender" },
+      { "id": "T7", "name": "Himanshu Singh", "jersey": "7", "role": "All-Rounder" }
+    ],
+    "substitutes": [
+      { "id": "TS1", "name": "Jatin", "jersey": "19", "role": "Raider" },
+      { "id": "TS2", "name": "Amirhossein Bastami", "jersey": "21", "role": "Defender" },
+      { "id": "TS3", "name": "K. Abhimanyu", "jersey": "23", "role": "Raider" }
+    ]
+  }
+]

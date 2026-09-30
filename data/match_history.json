@@ -1,0 +1,847 @@
+[
+  {
+    "id": "match_1790779553555",
+    "savedAt": "2026-09-30T14:45:53.555Z",
+    "matchTitle": "PATNA WARRIORS vs BENGAL TIGERS",
+    "notes": "Match played on 9/30/2026",
+    "winner": "BENGAL TIGERS",
+    "margin": 9,
+    "scoreA": 11,
+    "scoreB": 20,
+    "teamA": {
+      "id": "teamA",
+      "name": "PATNA WARRIORS",
+      "color": "#FF6B00",
+      "score": 11,
+      "raidPoints": 9,
+      "tacklePoints": 2,
+      "allOutPoints": 0,
+      "emptyRaidsCount": 0,
+      "players": [
+        {
+          "id": "A1",
+          "name": "Sachin Tanwar",
+          "jersey": "1",
+          "role": "Raider",
+          "isOnCourt": false,
+          "raidPoints": 5,
+          "bonusPoints": 2,
+          "tacklePoints": 2,
+          "outsCount": 3,
+          "revivalsCount": 1
+        },
+        {
+          "id": "A2",
+          "name": "Manjeet Dahiya",
+          "jersey": "2",
+          "role": "Raider",
+          "isOnCourt": false,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 3,
+          "revivalsCount": 1
+        },
+        {
+          "id": "A3",
+          "name": "Neeraj Kumar",
+          "jersey": "3",
+          "role": "Defender",
+          "isOnCourt": false,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 0
+        },
+        {
+          "id": "A4",
+          "name": "Sunil Kumar",
+          "jersey": "4",
+          "role": "Defender",
+          "isOnCourt": false,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 3,
+          "revivalsCount": 1
+        },
+        {
+          "id": "A5",
+          "name": "Mohit Goyat",
+          "jersey": "5",
+          "role": "All-Rounder",
+          "isOnCourt": false,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 0
+        },
+        {
+          "id": "A6",
+          "name": "Sajin C.",
+          "jersey": "6",
+          "role": "Defender",
+          "isOnCourt": false,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 0
+        },
+        {
+          "id": "AS1",
+          "name": "Rohit Gulia",
+          "jersey": "18",
+          "role": "All-Rounder",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0,
+          "isOnCourt": true
+        }
+      ],
+      "substitutes": [
+        {
+          "id": "A7",
+          "name": "Shubham Shinde",
+          "jersey": "7",
+          "role": "Defender",
+          "isOnCourt": false,
+          "raidPoints": 1,
+          "bonusPoints": 1,
+          "tacklePoints": 0,
+          "outsCount": 1,
+          "revivalsCount": 0
+        },
+        {
+          "id": "AS2",
+          "name": "Ankit Jaglan",
+          "jersey": "20",
+          "role": "Defender",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        },
+        {
+          "id": "AS3",
+          "name": "Rakesh Narwal",
+          "jersey": "22",
+          "role": "Raider",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        }
+      ],
+      "benchQueue": [
+        "A5",
+        "A6",
+        "A3",
+        "A1",
+        "A2",
+        "A4"
+      ]
+    },
+    "teamB": {
+      "id": "teamB",
+      "name": "BENGAL TIGERS",
+      "color": "#00B4D8",
+      "score": 20,
+      "raidPoints": 18,
+      "tacklePoints": 0,
+      "allOutPoints": 2,
+      "emptyRaidsCount": 0,
+      "players": [
+        {
+          "id": "B1",
+          "name": "Maninder Singh",
+          "jersey": "9",
+          "role": "Raider",
+          "isOnCourt": true,
+          "raidPoints": 7,
+          "bonusPoints": 1,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 2
+        },
+        {
+          "id": "B2",
+          "name": "Shrikant Jadhav",
+          "jersey": "10",
+          "role": "Raider",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 2
+        },
+        {
+          "id": "B3",
+          "name": "Vaibhav Garje",
+          "jersey": "11",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 9,
+          "bonusPoints": 1,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        },
+        {
+          "id": "B4",
+          "name": "Jaskirat Singh",
+          "jersey": "12",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 1,
+          "revivalsCount": 1
+        },
+        {
+          "id": "B5",
+          "name": "Nitin Rawal",
+          "jersey": "13",
+          "role": "All-Rounder",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 1,
+          "revivalsCount": 1
+        },
+        {
+          "id": "B6",
+          "name": "Darshan J.",
+          "jersey": "14",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 1,
+          "revivalsCount": 1
+        },
+        {
+          "id": "B7",
+          "name": "Shubham Kumar",
+          "jersey": "15",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        }
+      ],
+      "substitutes": [
+        {
+          "id": "BS1",
+          "name": "Akshay Kumar",
+          "jersey": "25",
+          "role": "Defender",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        },
+        {
+          "id": "BS2",
+          "name": "Suyog Gaikar",
+          "jersey": "27",
+          "role": "Raider",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        },
+        {
+          "id": "BS3",
+          "name": "Hem Raj",
+          "jersey": "29",
+          "role": "All-Rounder",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        }
+      ],
+      "benchQueue": []
+    },
+    "topRaider": {
+      "name": "Vaibhav Garje",
+      "jersey": "11",
+      "points": 10
+    },
+    "topDefender": {
+      "name": "Sachin Tanwar",
+      "jersey": "1",
+      "points": 2
+    },
+    "logs": [
+      {
+        "id": 1790765018917.7747,
+        "timestamp": "11:35",
+        "half": 1,
+        "description": "\ud83d\udd04 SUBSTITUTION (PATNA WARRIORS): #18 Rohit Gulia IN \u2794 #7 Shubham Shinde OUT to substitutes bench.",
+        "type": "info"
+      },
+      {
+        "id": 1790765002470.4365,
+        "timestamp": "11:35",
+        "half": 1,
+        "description": "\ud83d\udcbe Match archived successfully: PATNA WARRIORS vs BENGAL TIGERS (11 - 20)",
+        "type": "info"
+      },
+      {
+        "id": 1790764770246.0312,
+        "timestamp": "11:35",
+        "half": 1,
+        "description": "\ud83d\udd25 SUPER RAID! #11 Vaibhav Garje (BENGAL TIGERS) scored 3 points (3 touch). Defenders OUT: [#1 Sachin Tanwar, #2 Manjeet Dahiya, #4 Sunil Kumar] went to the bench. Revived: [#9 Maninder Singh, #12 Jaskirat Singh, #10 Shrikant Jadhav] returned to court (FIFO).",
+        "type": "super-raid"
+      },
+      {
+        "id": 1790764253295.0107,
+        "timestamp": "11:35",
+        "half": 1,
+        "description": "#1 Sachin Tanwar (PATNA WARRIORS) scored 1 point (1 touch). Defenders OUT: [#10 Shrikant Jadhav] went to the bench. Revived: [#2 Manjeet Dahiya] returned to court (FIFO).",
+        "type": "raid"
+      },
+      {
+        "id": 1790763382236.589,
+        "timestamp": "11:27",
+        "half": 1,
+        "description": "\ud83d\udee1\ufe0f\u26a1 SUPER TACKLE! #1 Sachin Tanwar (PATNA WARRIORS) pinned #12 Jaskirat Singh! Defending team was &le;3 players, awarded +2 POINTS! #12 Jaskirat Singh is OUT. Defending team revived [#4 Sunil Kumar] (FIFO).",
+        "type": "super-tackle"
+      },
+      {
+        "id": 1790763346668.9517,
+        "timestamp": "10:51",
+        "half": 1,
+        "description": "#7 Shubham Shinde (PATNA WARRIORS) scored 2 points (1 touch + 1 bonus). Defenders OUT: [#9 Maninder Singh] went to the bench. Revived: [#1 Sachin Tanwar] returned to court (FIFO).",
+        "type": "raid"
+      },
+      {
+        "id": 1790763327388.9167,
+        "timestamp": "10:32",
+        "half": 1,
+        "description": "\ud83d\udd25 SUPER RAID! #11 Vaibhav Garje (BENGAL TIGERS) scored 7 points (6 touch + 1 bonus). Defenders OUT: [#1 Sachin Tanwar, #4 Sunil Kumar, #2 Manjeet Dahiya, #5 Mohit Goyat, #6 Sajin C., #3 Neeraj Kumar] went to the bench. Revived: [#9 Maninder Singh, #10 Shrikant Jadhav, #13 Nitin Rawal, #14 Darshan J.] returned to court (FIFO).",
+        "type": "super-raid"
+      },
+      {
+        "id": 1790763309613.598,
+        "timestamp": "10:14",
+        "half": 1,
+        "description": "\ud83d\udd25 SUPER RAID! #1 Sachin Tanwar (PATNA WARRIORS) scored 5 points (4 touch + 1 bonus). Defenders OUT: [#9 Maninder Singh, #10 Shrikant Jadhav, #13 Nitin Rawal, #14 Darshan J.] went to the bench.",
+        "type": "super-raid"
+      },
+      {
+        "id": 1790763290136.5515,
+        "timestamp": "10:00",
+        "half": 1,
+        "description": "\u23f1\ufe0f Match Clock adjusted to 10:00.",
+        "type": "info"
+      },
+      {
+        "id": 1790763275295.1953,
+        "timestamp": "00:00",
+        "half": 1,
+        "description": "\ud83d\udca5 ALL-OUT (LONA)! PATNA WARRIORS suffered All-Out! +2 Points awarded to BENGAL TIGERS. All 7 players return to court!",
+        "type": "allout"
+      },
+      {
+        "id": 1790763275292.3787,
+        "timestamp": "00:00",
+        "half": 1,
+        "description": "\ud83d\udd25 SUPER RAID! #9 Maninder Singh (BENGAL TIGERS) scored 8 points (7 touch + 1 bonus). Defenders OUT: [#1 Sachin Tanwar, #2 Manjeet Dahiya, #3 Neeraj Kumar, #7 Shubham Shinde, #6 Sajin C., #5 Mohit Goyat, #4 Sunil Kumar] went to the bench.",
+        "type": "super-raid"
+      },
+      {
+        "id": 1790762808152.295,
+        "timestamp": "00:00",
+        "half": 1,
+        "description": "#1 Sachin Tanwar (PATNA WARRIORS) scored 1 point (1 bonus point).",
+        "type": "raid"
+      }
+    ]
+  },
+  {
+    "id": "match_1790765002469",
+    "savedAt": "2026-09-30T10:43:22.469Z",
+    "matchTitle": "PATNA WARRIORS vs BENGAL TIGERS",
+    "notes": "Match played on 9/30/2026",
+    "winner": "BENGAL TIGERS",
+    "margin": 9,
+    "scoreA": 11,
+    "scoreB": 20,
+    "teamA": {
+      "id": "teamA",
+      "name": "PATNA WARRIORS",
+      "color": "#FF6B00",
+      "score": 11,
+      "raidPoints": 9,
+      "tacklePoints": 2,
+      "allOutPoints": 0,
+      "emptyRaidsCount": 0,
+      "players": [
+        {
+          "id": "A1",
+          "name": "Sachin Tanwar",
+          "jersey": "1",
+          "role": "Raider",
+          "isOnCourt": false,
+          "raidPoints": 5,
+          "bonusPoints": 2,
+          "tacklePoints": 2,
+          "outsCount": 3,
+          "revivalsCount": 1
+        },
+        {
+          "id": "A2",
+          "name": "Manjeet Dahiya",
+          "jersey": "2",
+          "role": "Raider",
+          "isOnCourt": false,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 3,
+          "revivalsCount": 1
+        },
+        {
+          "id": "A3",
+          "name": "Neeraj Kumar",
+          "jersey": "3",
+          "role": "Defender",
+          "isOnCourt": false,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 0
+        },
+        {
+          "id": "A4",
+          "name": "Sunil Kumar",
+          "jersey": "4",
+          "role": "Defender",
+          "isOnCourt": false,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 3,
+          "revivalsCount": 1
+        },
+        {
+          "id": "A5",
+          "name": "Mohit Goyat",
+          "jersey": "5",
+          "role": "All-Rounder",
+          "isOnCourt": false,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 0
+        },
+        {
+          "id": "A6",
+          "name": "Sajin C.",
+          "jersey": "6",
+          "role": "Defender",
+          "isOnCourt": false,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 0
+        },
+        {
+          "id": "A7",
+          "name": "Shubham Shinde",
+          "jersey": "7",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 1,
+          "bonusPoints": 1,
+          "tacklePoints": 0,
+          "outsCount": 1,
+          "revivalsCount": 0
+        }
+      ],
+      "substitutes": [
+        {
+          "id": "AS1",
+          "name": "Rohit Gulia",
+          "jersey": "18",
+          "role": "All-Rounder",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        },
+        {
+          "id": "AS2",
+          "name": "Ankit Jaglan",
+          "jersey": "20",
+          "role": "Defender",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        },
+        {
+          "id": "AS3",
+          "name": "Rakesh Narwal",
+          "jersey": "22",
+          "role": "Raider",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        }
+      ],
+      "benchQueue": [
+        "A5",
+        "A6",
+        "A3",
+        "A1",
+        "A2",
+        "A4"
+      ]
+    },
+    "teamB": {
+      "id": "teamB",
+      "name": "BENGAL TIGERS",
+      "color": "#00B4D8",
+      "score": 20,
+      "raidPoints": 18,
+      "tacklePoints": 0,
+      "allOutPoints": 2,
+      "emptyRaidsCount": 0,
+      "players": [
+        {
+          "id": "B1",
+          "name": "Maninder Singh",
+          "jersey": "9",
+          "role": "Raider",
+          "isOnCourt": true,
+          "raidPoints": 7,
+          "bonusPoints": 1,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 2
+        },
+        {
+          "id": "B2",
+          "name": "Shrikant Jadhav",
+          "jersey": "10",
+          "role": "Raider",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 2
+        },
+        {
+          "id": "B3",
+          "name": "Vaibhav Garje",
+          "jersey": "11",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 9,
+          "bonusPoints": 1,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        },
+        {
+          "id": "B4",
+          "name": "Jaskirat Singh",
+          "jersey": "12",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 1,
+          "revivalsCount": 1
+        },
+        {
+          "id": "B5",
+          "name": "Nitin Rawal",
+          "jersey": "13",
+          "role": "All-Rounder",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 1,
+          "revivalsCount": 1
+        },
+        {
+          "id": "B6",
+          "name": "Darshan J.",
+          "jersey": "14",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 1,
+          "revivalsCount": 1
+        },
+        {
+          "id": "B7",
+          "name": "Shubham Kumar",
+          "jersey": "15",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        }
+      ],
+      "substitutes": [
+        {
+          "id": "BS1",
+          "name": "Akshay Kumar",
+          "jersey": "25",
+          "role": "Defender",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        },
+        {
+          "id": "BS2",
+          "name": "Suyog Gaikar",
+          "jersey": "27",
+          "role": "Raider",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        },
+        {
+          "id": "BS3",
+          "name": "Hem Raj",
+          "jersey": "29",
+          "role": "All-Rounder",
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "tacklePoints": 0,
+          "outsCount": 0,
+          "revivalsCount": 0
+        }
+      ],
+      "benchQueue": []
+    },
+    "topRaider": {
+      "name": "Vaibhav Garje",
+      "jersey": "11",
+      "points": 10
+    },
+    "topDefender": {
+      "name": "Sachin Tanwar",
+      "jersey": "1",
+      "points": 2
+    },
+    "logs": [
+      {
+        "id": 1790764770246.0312,
+        "timestamp": "11:35",
+        "half": 1,
+        "description": "\ud83d\udd25 SUPER RAID! #11 Vaibhav Garje (BENGAL TIGERS) scored 3 points (3 touch). Defenders OUT: [#1 Sachin Tanwar, #2 Manjeet Dahiya, #4 Sunil Kumar] went to the bench. Revived: [#9 Maninder Singh, #12 Jaskirat Singh, #10 Shrikant Jadhav] returned to court (FIFO).",
+        "type": "super-raid"
+      },
+      {
+        "id": 1790764253295.0107,
+        "timestamp": "11:35",
+        "half": 1,
+        "description": "#1 Sachin Tanwar (PATNA WARRIORS) scored 1 point (1 touch). Defenders OUT: [#10 Shrikant Jadhav] went to the bench. Revived: [#2 Manjeet Dahiya] returned to court (FIFO).",
+        "type": "raid"
+      },
+      {
+        "id": 1790763382236.589,
+        "timestamp": "11:27",
+        "half": 1,
+        "description": "\ud83d\udee1\ufe0f\u26a1 SUPER TACKLE! #1 Sachin Tanwar (PATNA WARRIORS) pinned #12 Jaskirat Singh! Defending team was &le;3 players, awarded +2 POINTS! #12 Jaskirat Singh is OUT. Defending team revived [#4 Sunil Kumar] (FIFO).",
+        "type": "super-tackle"
+      },
+      {
+        "id": 1790763346668.9517,
+        "timestamp": "10:51",
+        "half": 1,
+        "description": "#7 Shubham Shinde (PATNA WARRIORS) scored 2 points (1 touch + 1 bonus). Defenders OUT: [#9 Maninder Singh] went to the bench. Revived: [#1 Sachin Tanwar] returned to court (FIFO).",
+        "type": "raid"
+      },
+      {
+        "id": 1790763327388.9167,
+        "timestamp": "10:32",
+        "half": 1,
+        "description": "\ud83d\udd25 SUPER RAID! #11 Vaibhav Garje (BENGAL TIGERS) scored 7 points (6 touch + 1 bonus). Defenders OUT: [#1 Sachin Tanwar, #4 Sunil Kumar, #2 Manjeet Dahiya, #5 Mohit Goyat, #6 Sajin C., #3 Neeraj Kumar] went to the bench. Revived: [#9 Maninder Singh, #10 Shrikant Jadhav, #13 Nitin Rawal, #14 Darshan J.] returned to court (FIFO).",
+        "type": "super-raid"
+      },
+      {
+        "id": 1790763309613.598,
+        "timestamp": "10:14",
+        "half": 1,
+        "description": "\ud83d\udd25 SUPER RAID! #1 Sachin Tanwar (PATNA WARRIORS) scored 5 points (4 touch + 1 bonus). Defenders OUT: [#9 Maninder Singh, #10 Shrikant Jadhav, #13 Nitin Rawal, #14 Darshan J.] went to the bench.",
+        "type": "super-raid"
+      },
+      {
+        "id": 1790763290136.5515,
+        "timestamp": "10:00",
+        "half": 1,
+        "description": "\u23f1\ufe0f Match Clock adjusted to 10:00.",
+        "type": "info"
+      },
+      {
+        "id": 1790763275295.1953,
+        "timestamp": "00:00",
+        "half": 1,
+        "description": "\ud83d\udca5 ALL-OUT (LONA)! PATNA WARRIORS suffered All-Out! +2 Points awarded to BENGAL TIGERS. All 7 players return to court!",
+        "type": "allout"
+      },
+      {
+        "id": 1790763275292.3787,
+        "timestamp": "00:00",
+        "half": 1,
+        "description": "\ud83d\udd25 SUPER RAID! #9 Maninder Singh (BENGAL TIGERS) scored 8 points (7 touch + 1 bonus). Defenders OUT: [#1 Sachin Tanwar, #2 Manjeet Dahiya, #3 Neeraj Kumar, #7 Shubham Shinde, #6 Sajin C., #5 Mohit Goyat, #4 Sunil Kumar] went to the bench.",
+        "type": "super-raid"
+      },
+      {
+        "id": 1790762808152.295,
+        "timestamp": "00:00",
+        "half": 1,
+        "description": "#1 Sachin Tanwar (PATNA WARRIORS) scored 1 point (1 bonus point).",
+        "type": "raid"
+      }
+    ]
+  },
+  {
+    "id": "match_archived_1",
+    "matchId": "match_archived_1",
+    "matchTitle": "Championship: Mumbai Warriors vs Bengal Tigers",
+    "winner": "MUMBAI WARRIORS",
+    "scoreA": 35,
+    "scoreB": 28,
+    "margin": 7,
+    "notes": "Tournament Match 1 - League Stage",
+    "savedAt": "2026-09-30T14:40:00Z",
+    "teamA": {
+      "id": "teamA",
+      "name": "MUMBAI WARRIORS",
+      "color": "#FF5722",
+      "score": 35,
+      "raidPoints": 22,
+      "tacklePoints": 9,
+      "allOutPoints": 4,
+      "superRaids": 2,
+      "emptyRaidsCount": 1,
+      "players": [
+        {
+          "id": "A1",
+          "name": "Guman Singh",
+          "jersey": "1",
+          "role": "Raider",
+          "isOnCourt": true,
+          "raidPoints": 14,
+          "bonusPoints": 3,
+          "superRaids": 2,
+          "tacklePoints": 0,
+          "outsCount": 2,
+          "revivalsCount": 4
+        },
+        {
+          "id": "A2",
+          "name": "Surinder Singh",
+          "jersey": "3",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "superRaids": 0,
+          "tacklePoints": 5,
+          "outsCount": 1,
+          "revivalsCount": 2
+        }
+      ],
+      "substitutes": [],
+      "benchQueue": []
+    },
+    "teamB": {
+      "id": "teamB",
+      "name": "BENGAL TIGERS",
+      "color": "#00B4D8",
+      "score": 28,
+      "raidPoints": 19,
+      "tacklePoints": 7,
+      "allOutPoints": 2,
+      "superRaids": 1,
+      "emptyRaidsCount": 2,
+      "players": [
+        {
+          "id": "B1",
+          "name": "Maninder Singh",
+          "jersey": "9",
+          "role": "Raider",
+          "isOnCourt": true,
+          "raidPoints": 12,
+          "bonusPoints": 2,
+          "superRaids": 1,
+          "tacklePoints": 0,
+          "outsCount": 3,
+          "revivalsCount": 3
+        },
+        {
+          "id": "B3",
+          "name": "Vaibhav Garje",
+          "jersey": "11",
+          "role": "Defender",
+          "isOnCourt": true,
+          "raidPoints": 0,
+          "bonusPoints": 0,
+          "superRaids": 0,
+          "tacklePoints": 4,
+          "outsCount": 2,
+          "revivalsCount": 1
+        }
+      ],
+      "substitutes": [],
+      "benchQueue": []
+    },
+    "topRaider": {
+      "name": "Guman Singh",
+      "jersey": "1",
+      "points": 17
+    },
+    "topDefender": {
+      "name": "Surinder Singh",
+      "jersey": "3",
+      "points": 5
+    },
+    "logs": []
+  }
+]

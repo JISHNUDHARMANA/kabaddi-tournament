@@ -1,0 +1,2 @@
+# Pro Kabaddi Tournament Server uses standard library (http.server, json, threading, time)
+# No external pip dependencies required!

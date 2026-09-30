@@ -1,0 +1,14 @@
+# System / OS
+.DS_Store
+Thumbs.db
+
+# Vercel
+.vercel
+
+# Logs and cache
+*.log
+__pycache__/
+*.pyc
+
+# Local scratch
+scratch/

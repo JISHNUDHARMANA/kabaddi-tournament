@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#080C14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Kabaddi Pro Scoreboard & Match Tracker</title>
+  <meta name="description" content="Professional Kabaddi live scoreboard, raid & tackle point tracker, player court/out queue visualizer with automatic revival engine.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3.1">
+  <link rel="stylesheet" href="css/tournament.css?v=3.2">
+</head>
+<body>
+  <!-- GLOBAL TOURNAMENT HEADER & NAVIGATION -->
+  <header class="tournament-navbar">
+    <div class="t-nav-brand" data-goto-view="live">
+      <div class="t-nav-logo">⚡ KABADDI 2026</div>
+      <div class="t-nav-title-group">
+        <span class="t-nav-title">Championship Trophy</span>
+        <span class="t-nav-subtitle">Live Tournament Platform</span>
+      </div>
+    </div>
+
+    <nav class="t-nav-menu">
+      <button class="t-nav-btn active" data-target-view="live">
+        <span>⚡</span> Live Scoreboard <span class="badge-live">LIVE</span>
+      </button>
+      <button class="t-nav-btn" data-target-view="fixtures">
+        <span>📅</span> Fixtures & Schedule
+      </button>
+      <button class="t-nav-btn" data-target-view="standings">
+        <span>🏆</span> Points Table
+      </button>
+      <button class="t-nav-btn" data-target-view="teams">
+        <span>👥</span> Teams & Squads
+      </button>
+      <button class="t-nav-btn" data-target-view="archives">
+        <span>📁</span> Match Archives
+      </button>
+      <button class="t-nav-btn" data-target-view="portal">
+        <span>👑</span> Scorer Portal
+      </button>
+    </nav>
+
+    <div class="t-nav-right">
+      <div class="t-operator-pill" id="navOperatorPill">
+        <span>👁️</span> <strong>Spectator</strong>
+      </div>
+      <button id="navOpenLoginBtn" class="btn btn-outline-gold btn-tiny">🔑 Scorer Login</button>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <!-- VIEW 1: LIVE MATCH SCOREBOARD -->
+    <div id="view_live" class="tournament-view active">
+      <!-- Role Banner: Spectator Mode (Default for Audience / Watchers) -->
+    <div id="spectatorBanner" class="role-banner spectator-mode-banner">
+      <div class="banner-badge-group">
+        <span class="live-pulse-dot"></span>
+        <strong class="banner-title">LIVE BROADCAST • SPECTATOR MODE</strong>
+        <span class="banner-sub">Watch Only (Scoring Controls Locked)</span>
+      </div>
+      <div class="banner-actions">
+        <span class="sync-indicator" id="spectatorSyncStatus">🟢 Live Synced</span>
+        <button id="openScorerLoginBtn" class="btn btn-unlock-scorer">🔑 Scorer Login</button>
+      </div>
+    </div>
+
+    <!-- Role Banner: Scorer Mode (For the Single Official Operator) -->
+    <div id="scorerBanner" class="role-banner scorer-mode-banner hidden">
+      <div class="banner-badge-group">
+        <span class="crown-icon">👑</span>
+        <strong class="banner-title">OFFICIAL SCORER ACTIVE</strong>
+        <span class="banner-sub">Single-Person Control • Live Broadcast Active</span>
+      </div>
+      <div class="banner-actions">
+        <span class="sync-indicator" id="scorerSyncStatus">🟢 Broadcasting Live</span>
+        <button id="openChangeCredsBtn" class="btn btn-tiny btn-outline-gold" title="Create / Change Scorer ID & Password">🔑 Set ID/Pass</button>
+        <button id="switchSpectatorBtn" class="btn btn-switch-mode" title="Switch to Watch Only Mode">👁️ Watch Mode</button>
+        <button id="lockControlsBtn" class="btn btn-lock-mode" title="Lock controls to prevent accidental touches">🔒 Lock</button>
+      </div>
+    </div>
+
+    <!-- Top Broadcast Header -->
+    <header class="broadcast-header">
+      <div class="header-left">
+        <div class="brand-badge">
+          <span class="brand-icon">⚡</span>
+          <span class="brand-text">PRO KABADDI <span>TRACKER</span></span>
+        </div>
+        <div class="match-info-pill">
+          <span class="badge live-badge"><span class="pulse-dot"></span> LIVE</span>
+          <span id="matchHalfDisplay" class="match-half-tag">1st Half</span>
+        </div>
+        <!-- 1-Click Role Switcher -->
+        <div class="header-role-switcher" id="headerRoleSwitcher">
+          <button id="btnRoleScorer" class="role-pill-btn active" title="Switch to Official Scorer Mode">👑 Scorer</button>
+          <button id="btnRoleViewer" class="role-pill-btn" title="Switch to Spectator Watch Mode">👁️ Spectator</button>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <!-- Main Match Clock & Raid Timer (User-Editable) -->
+        <div class="timers-cluster">
+          <div class="timer-card match-timer-card">
+            <div class="timer-card-header">
+              <span class="timer-lbl">MATCH CLOCK</span>
+              <button id="editMatchTimeBtn" class="btn-icon-tiny" title="Edit Match Clock Time">✏️</button>
+            </div>
+            <div class="timer-digits clickable-timer" id="matchTimeDisplay" title="Click to Edit Time">20:00</div>
+            <div class="timer-controls">
+              <button id="matchTimerToggleBtn" class="btn-tiny" title="Start/Pause Match Clock">▶</button>
+              <button id="matchTimerResetBtn" class="btn-tiny" title="Reset Match Clock">↺</button>
+            </div>
+          </div>
+
+          <div class="timer-card raid-timer-card" id="raidTimerCard">
+            <div class="timer-card-header">
+              <span class="timer-lbl">RAID (30s)</span>
+              <button id="editRaidTimeBtn" class="btn-icon-tiny" title="Edit Raid Clock Time">✏️</button>
+            </div>
+            <div class="timer-digits raid-digits clickable-timer" id="raidTimeDisplay" title="Click to Edit Raid Clock">30</div>
+            <div class="timer-controls">
+              <button id="raidTimerToggleBtn" class="btn-tiny btn-raid-toggle" title="Start/Pause Raid Clock">▶</button>
+              <button id="raidTimerResetBtn" class="btn-tiny" title="Reset 30s Clock">↺</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button id="undoBtn" class="header-action-btn" title="Undo Last Action" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
+          <span class="btn-text-responsive">Undo</span>
+        </button>
+        <button id="saveAndEndMatchBtn" class="header-action-btn btn-save-action" title="Save Match Summary to History">
+          <span>💾</span>
+          <span class="btn-text-responsive">Save Match</span>
+        </button>
+        <button id="matchHistoryBtn" class="header-action-btn" title="View Saved Match Archives">
+          <span>📁</span>
+          <span class="btn-text-responsive">Archives</span>
+        </button>
+        <button id="mobileConnectBtn" class="header-action-btn mobile-highlight-btn" title="Open on Mobile / Scan QR">
+          <span>📱</span>
+          <span class="btn-text-responsive">Mobile QR</span>
+        </button>
+        <button id="teamConfigBtn" class="header-action-btn" title="Configure Teams & Players">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span class="btn-text-responsive">Setup</span>
+        </button>
+        <button id="statsModalBtn" class="header-action-btn" title="View Full Match Stats">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span class="btn-text-responsive">Stats</span>
+        </button>
+        <button id="soundToggleBtn" class="header-action-btn icon-only" title="Toggle Sound">
+          <span id="soundIcon">🔊</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Scoreboard Banner -->
+    <section class="main-scoreboard">
+      <!-- Team A Banner -->
+      <div class="team-banner team-a-banner" id="teamABanner">
+        <div class="team-info">
+          <div class="team-meta">
+            <span class="team-jersey-dot" id="teamAColorDot"></span>
+            <h2 class="team-name editable-team-title" id="teamANameDisplay" title="Click to Rename Team">PATNA WARRIORS</h2>
+            <button class="btn-inline-rename" id="renameTeamABtn" title="Rename Team A">✏️</button>
+          </div>
+          <div class="court-census">
+            <span class="active-count-tag" id="teamAActiveCount"><strong id="teamAActiveNum">7</strong> On Court</span>
+            <span class="out-count-tag" id="teamAOutCount"><strong id="teamAOutNum">0</strong> Out</span>
+          </div>
+          <!-- Raid status indicators -->
+          <div class="raid-indicator-wrap" id="teamARaidTag">
+            <span class="raiding-badge hidden" id="teamARaidingBadge">⚡ ATTACKING</span>
+            <span class="dior-badge hidden" id="teamADoOrDieBadge">⚠️ DO-OR-DIE RAID</span>
+          </div>
+        </div>
+
+        <div class="score-box-wrap">
+          <div class="score-box" id="teamAScore">0</div>
+          <div class="score-breakdown">
+            <span title="Raid Points">R: <strong id="teamARaidPts">0</strong></span>
+            <span class="sep">•</span>
+            <span title="Tackle Points">T: <strong id="teamATacklePts">0</strong></span>
+            <span class="sep">•</span>
+            <span title="All Out Points">All-Out: <strong id="teamAAllOutPts">0</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center VS & Match Phase Hub -->
+      <div class="vs-center-hub">
+        <div class="vs-badge">VS</div>
+        <div class="lead-indicator" id="leadIndicatorDisplay">Scores Level</div>
+        <div class="quick-half-switch">
+          <button id="switchHalfBtn" class="btn-micro">Switch Half</button>
+          <button id="newMatchBtn" class="btn-micro btn-danger-micro">Reset Match</button>
+        </div>
+      </div>
+
+      <!-- Team B Banner -->
+      <div class="team-banner team-b-banner" id="teamBBanner">
+        <div class="score-box-wrap">
+          <div class="score-box" id="teamBScore">0</div>
+          <div class="score-breakdown">
+            <span title="Raid Points">R: <strong id="teamBRaidPts">0</strong></span>
+            <span class="sep">•</span>
+            <span title="Tackle Points">T: <strong id="teamBTacklePts">0</strong></span>
+            <span class="sep">•</span>
+            <span title="All Out Points">All-Out: <strong id="teamBAllOutPts">0</strong></span>
+          </div>
+        </div>
+
+        <div class="team-info text-right">
+          <div class="team-meta justify-end">
+            <button class="btn-inline-rename" id="renameTeamBBtn" title="Rename Team B">✏️</button>
+            <h2 class="team-name editable-team-title" id="teamBNameDisplay" title="Click to Rename Team">BENGAL TIGERS</h2>
+            <span class="team-jersey-dot" id="teamBColorDot"></span>
+          </div>
+          <div class="court-census justify-end">
+            <span class="active-count-tag" id="teamBActiveCount"><strong id="teamBActiveNum">7</strong> On Court</span>
+            <span class="out-count-tag" id="teamBOutCount"><strong id="teamBOutNum">0</strong> Out</span>
+          </div>
+          <!-- Raid status indicators -->
+          <div class="raid-indicator-wrap justify-end" id="teamBRaidTag">
+            <span class="raiding-badge hidden" id="teamBRaidingBadge">⚡ ATTACKING</span>
+            <span class="dior-badge hidden" id="teamBDoOrDieBadge">⚠️ DO-OR-DIE RAID</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mobile Segmented Navigation Bar -->
+    <nav class="mobile-segmented-bar" id="mobileSegmentedBar">
+      <button class="mobile-segment-btn active" data-view="scoring">
+        <span class="m-icon">⚡</span>
+        <span>Scoring Desk</span>
+      </button>
+      <button class="mobile-segment-btn" data-view="court">
+        <span class="m-icon">🏟️</span>
+        <span>Court & Bench</span>
+      </button>
+      <button class="mobile-segment-btn" data-view="feed">
+        <span class="m-icon">📜</span>
+        <span>Match Feed</span>
+      </button>
+      <button class="mobile-segment-btn" id="mSegmentArchivesBtn" data-view="archives">
+        <span class="m-icon">📁</span>
+        <span>Archives</span>
+      </button>
+    </nav>
+
+    <!-- Interactive Match Console (Split Layout: Court Visualizer + Action Desk) -->
+    <main class="match-console" id="matchConsole" data-mobile-view="scoring">
+      
+      <!-- LEFT SECTION: Kabaddi Mat / Court & Bench Status -->
+      <section class="court-section" id="courtSection">
+        <div class="section-title-bar">
+          <h3>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+            LIVE COURT & BENCH REVIVAL QUEUE
+          </h3>
+          <span class="court-legend">
+            <span class="legend-item"><span class="dot dot-court"></span> On Court</span>
+            <span class="legend-item"><span class="dot dot-out"></span> Out (FIFO Bench)</span>
+            <span class="legend-item"><span class="dot dot-raider"></span> Active Raider</span>
+          </span>
+        </div>
+
+        <div class="kabaddi-mat-container">
+          <!-- Court Half A -->
+          <div class="court-half court-half-a" id="courtHalfA">
+            <div class="court-half-header">
+              <span class="half-title" id="courtTitleA">PATNA WARRIORS</span>
+              <span class="super-tackle-badge hidden" id="teamASuperTackleActive">⚡ SUPER TACKLE ON (&le;3)</span>
+            </div>
+
+            <div class="court-zones-wrapper">
+              <!-- Active Court Area -->
+              <div class="active-court-area">
+                <div class="zone-label">ON COURT PLAYERS</div>
+                <div class="court-players-grid" id="teamACourtGrid">
+                  <!-- Generated via JS -->
+                </div>
+              </div>
+
+              <!-- Out Bench / Sitting Block (FIFO Revival Order) -->
+              <div class="out-bench-area">
+                <div class="bench-header">
+                  <span class="zone-label bench-label">OUT BENCH (REVIVAL QUEUE)</span>
+                  <span class="fifo-hint">1st out revives first</span>
+                </div>
+                <div class="bench-queue" id="teamABenchQueue">
+                  <div class="empty-bench-msg">No players out</div>
+                </div>
+              </div>
+
+              <!-- Substitutes Bench Area (Team A) -->
+              <div class="substitute-bench-area">
+                <div class="bench-header">
+                  <span class="zone-label sub-label">SUBSTITUTES BENCH</span>
+                  <button class="btn-sub-trigger btn-micro" id="substituteTeamABtn">🔄 Swap Player</button>
+                </div>
+                <div class="sub-bench-queue" id="teamASubQueue">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Midline with Baulk lines -->
+          <div class="court-midline">
+            <div class="baulk-line baulk-left" title="Baulk Line Team A"></div>
+            <div class="center-line">
+              <span>MID LINE</span>
+            </div>
+            <div class="baulk-line baulk-right" title="Baulk Line Team B"></div>
+          </div>
+
+          <!-- Court Half B -->
+          <div class="court-half court-half-b" id="courtHalfB">
+            <div class="court-half-header">
+              <span class="half-title" id="courtTitleB">BENGAL TIGERS</span>
+              <span class="super-tackle-badge hidden" id="teamBSuperTackleActive">⚡ SUPER TACKLE ON (&le;3)</span>
+            </div>
+
+            <div class="court-zones-wrapper">
+              <!-- Active Court Area -->
+              <div class="active-court-area">
+                <div class="zone-label">ON COURT PLAYERS</div>
+                <div class="court-players-grid" id="teamBCourtGrid">
+                  <!-- Generated via JS -->
+                </div>
+              </div>
+
+              <!-- Out Bench / Sitting Block (FIFO Revival Order) -->
+              <div class="out-bench-area">
+                <div class="bench-header">
+                  <span class="zone-label bench-label">OUT BENCH (REVIVAL QUEUE)</span>
+                  <span class="fifo-hint">1st out revives first</span>
+                </div>
+                <div class="bench-queue" id="teamBBenchQueue">
+                  <div class="empty-bench-msg">No players out</div>
+                </div>
+              </div>
+
+              <!-- Substitutes Bench Area (Team B) -->
+              <div class="substitute-bench-area">
+                <div class="bench-header">
+                  <span class="zone-label sub-label">SUBSTITUTES BENCH</span>
+                  <button class="btn-sub-trigger btn-micro" id="substituteTeamBBtn">🔄 Swap Player</button>
+                </div>
+                <div class="sub-bench-queue" id="teamBSubQueue">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT SECTION: Point Logging & Action Desk -->
+      <section class="action-desk-section" id="actionDeskSection">
+        <!-- SPECTATOR LIVE MATCH CENTER (Visible in Spectator / Watch Only Mode) -->
+        <div class="spectator-match-card" id="spectatorMatchCenterCard">
+          <div class="spectator-card-header">
+            <div class="live-status-pill">
+              <span class="live-dot-pulse"></span>
+              <span>LIVE MATCH IN PROGRESS</span>
+            </div>
+            <div class="lock-indicator-badge">
+              <span>🔒 VIEW ONLY</span>
+            </div>
+          </div>
+
+          <div class="spectator-spotlight-grid">
+            <!-- Active Raider Card -->
+            <div class="spotlight-card raider-spotlight-card" id="spectatorRaiderCard">
+              <div class="spotlight-lbl">⚡ CURRENT RAIDER</div>
+              <div class="spotlight-avatar" id="specRaiderJersey">#1</div>
+              <div class="spotlight-name" id="specRaiderName">Sachin Tanwar</div>
+              <div class="spotlight-team" id="specRaiderTeam">PATNA WARRIORS</div>
+              <div class="spotlight-stats" id="specRaiderStats">Total Raid Points: 0</div>
+            </div>
+
+            <!-- Defending Unit Card -->
+            <div class="spotlight-card defender-spotlight-card" id="spectatorDefenderCard">
+              <div class="spotlight-lbl">🛡️ DEFENDING TEAM</div>
+              <div class="spotlight-count" id="specDefendersCount">7</div>
+              <div class="spotlight-team" id="specDefenderTeam">BENGAL TIGERS</div>
+              <div class="spotlight-subtext" id="specDefenderStatus">Full 7 Defenders on Court</div>
+              <div class="super-tackle-live-badge hidden" id="specSuperTackleBadge">⚡ SUPER TACKLE ON! (2 PTS)</div>
+            </div>
+          </div>
+
+          <!-- Situation Banner -->
+          <div class="spectator-situation-banner" id="specSituationBanner">
+            <div class="situation-item">
+              <span class="sit-lbl">Raid Clock:</span>
+              <strong class="sit-val" id="specRaidClockVal">30s</strong>
+            </div>
+            <div class="situation-item">
+              <span class="sit-lbl">Half:</span>
+              <strong class="sit-val" id="specHalfVal">1st Half</strong>
+            </div>
+            <div class="situation-item">
+              <span class="sit-lbl">Raids without point:</span>
+              <strong class="sit-val" id="specEmptyRaidsVal">0</strong>
+            </div>
+          </div>
+
+          <!-- Official Control Notice -->
+          <div class="spectator-footer-notice">
+            <div class="notice-text">
+              <span>🛡️</span>
+              <small>Points, substitutions & clocks are officiated live by the designated scorekeeper.</small>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="btn btn-secondary btn-tiny" id="specViewArchivesBtn">📁 Archives</button>
+              <button class="btn btn-outline-gold btn-tiny" id="specUnlockControlsBtn">🔑 Scorer Login</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- OFFICIAL SCORING DESK (Visible only in Scorer Mode) -->
+        <div class="action-desk-card" id="actionDeskCard">
+          <div class="desk-header">
+            <div class="desk-title">
+              <span class="desk-indicator">●</span>
+              <h3>OFFICIAL SCORING DESK</h3>
+            </div>
+            <div class="raiding-team-selector">
+              <span class="selector-lbl">Raiding Team:</span>
+              <div class="team-toggle-pill">
+                <button id="selectRaidingTeamABtn" class="team-toggle-btn active-raiding-a">Patna</button>
+                <button id="selectRaidingTeamBBtn" class="team-toggle-btn">Bengal</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Raider Selector Dropdown / Pills -->
+          <div class="raider-selection-box">
+            <div class="raider-select-header">
+              <label for="activeRaiderSelect">Select Active Raider:</label>
+              <span class="raider-info-badge" id="activeRaiderStats">P: 0 | R: 0</span>
+            </div>
+            <div class="raider-pills-container" id="raiderPillsList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Points Classification Controls -->
+          <div class="action-tabs-wrap">
+            <div class="action-tab-buttons">
+              <button class="action-tab-btn active" data-tab="raid-tab">RAID POINT (Attacker Scores)</button>
+              <button class="action-tab-btn" data-tab="tackle-tab">DEFENDING POINT (Tackle)</button>
+              <button class="action-tab-btn" data-tab="special-tab">EXTRAS & ALL-OUT</button>
+            </div>
+
+            <!-- TAB 1: RAID ACTIONS -->
+            <div class="tab-pane active" id="raid-tab">
+              <div class="raid-action-builder">
+                <!-- Defender touch selection -->
+                <div class="builder-group">
+                  <div class="group-header">
+                    <label>1. Defenders Tagged / Touched by Raider:</label>
+                    <span class="help-text">Selected defenders will go <strong>OUT</strong> to the bench</span>
+                  </div>
+
+                  <!-- Quick Raid Presets -->
+                  <div class="quick-touch-presets" id="quickTouchPresets">
+                    <span class="preset-label">⚡ Quick Presets:</span>
+                    <button type="button" class="btn-touch-preset" data-touches="1">+1 Touch</button>
+                    <button type="button" class="btn-touch-preset" data-touches="2">+2 Touches</button>
+                    <button type="button" class="btn-touch-preset super-preset" data-touches="3">🔥 +3 Super Raid</button>
+                    <button type="button" class="btn-touch-preset super-preset" data-touches="4">🔥 +4 Super Raid</button>
+                    <button type="button" class="btn-touch-preset clear-preset" data-touches="0">Clear</button>
+                  </div>
+
+                  <div class="defender-touch-chips" id="defenderTouchChips">
+                    <!-- Dynamic chips of opposing on-court defenders -->
+                  </div>
+                </div>
+
+                <!-- Bonus Point Option -->
+                <div class="builder-group bonus-group">
+                  <label class="custom-checkbox-label">
+                    <input type="checkbox" id="bonusCheckbox">
+                    <span class="checkmark"></span>
+                    <span class="checkbox-text">
+                      <strong>Bonus Point (+1 Pt)</strong>
+                      <small class="muted">Raider crossed bonus line (Defenders do NOT go out)</small>
+                    </span>
+                  </label>
+                </div>
+
+                <!-- Live Point Preview for Raid -->
+                <div class="action-preview-banner" id="raidActionPreview">
+                  <div class="preview-metric">
+                    <span class="preview-lbl">Total Raid Points</span>
+                    <span class="preview-val" id="raidTotalPreview">0</span>
+                  </div>
+                  <div class="preview-detail" id="raidDetailPreview">
+                    Select touched defenders or bonus to commit point
+                  </div>
+                </div>
+
+                <!-- Execute Raid Buttons -->
+                <div class="action-btn-row">
+                  <button id="commitRaidBtn" class="btn btn-primary btn-large" disabled>
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-text">COMMIT RAID POINTS</span>
+                  </button>
+                  <button id="emptyRaidBtn" class="btn btn-secondary" title="Raider returns safely without points">
+                    <span>Empty Raid</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: TACKLE / DEFENSE ACTIONS -->
+            <div class="tab-pane" id="tackle-tab">
+              <div class="tackle-action-builder">
+                <div class="tackle-prompt">
+                  <div class="tackle-icon-large">🛡️</div>
+                  <div class="tackle-summary">
+                    <h4>DEFENDING TEAM TACKLED RAIDER</h4>
+                    <p class="muted">Active raider (<strong id="tackledRaiderName">Player</strong>) goes <strong>OUT</strong> of the court to the bench.</p>
+                  </div>
+                </div>
+
+                <div class="builder-group">
+                  <label>Primary Defender (Credited with Tackle):</label>
+                  <div class="defender-selector-grid" id="tackleCreditedDefenderGrid">
+                    <!-- Dynamic list of defenders on court -->
+                  </div>
+                </div>
+
+                <!-- Super Tackle Banner if applicable -->
+                <div class="super-tackle-card" id="superTackleCard">
+                  <div class="super-tackle-header">
+                    <span class="st-icon">⚡</span>
+                    <strong>SUPER TACKLE SITUATION</strong>
+                  </div>
+                  <p id="superTackleCardDesc">Defending team has 3 or fewer players on court. Successful tackle awards <strong>2 POINTS</strong>!</p>
+                </div>
+
+                <!-- Execute Tackle Button -->
+                <div class="action-btn-row">
+                  <button id="commitTackleBtn" class="btn btn-tackle btn-large">
+                    <span class="btn-icon">🛡️</span>
+                    <span class="btn-text" id="commitTackleBtnText">COMMIT TACKLE (+1 PT)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 3: SPECIAL / ALL-OUT / TECHNICAL -->
+            <div class="tab-pane" id="special-tab">
+              <div class="special-actions-builder">
+                <div class="special-action-card">
+                  <div class="sp-text">
+                    <h4>ALL-OUT (LONA)</h4>
+                    <p class="muted">Clean sweep! Grants <strong>+2 Bonus Points</strong> to the opposing team and immediately revives all 7 players to the court.</p>
+                  </div>
+                  <div class="sp-btns">
+                    <button id="allOutTeamABtn" class="btn btn-outline">Enforce Team A All-Out</button>
+                    <button id="allOutTeamBBtn" class="btn btn-outline">Enforce Team B All-Out</button>
+                  </div>
+                </div>
+
+                <div class="special-action-card">
+                  <div class="sp-text">
+                    <h4>TECHNICAL POINT (+1 Pt)</h4>
+                    <p class="muted">Awarded for line fault, illegal coach interference, or delay of game. No player goes out / revives.</p>
+                  </div>
+                  <div class="sp-btns">
+                    <button id="techPointABtn" class="btn btn-outline">+1 Pt to Team A</button>
+                    <button id="techPointBBtn" class="btn btn-outline">+1 Pt to Team B</button>
+                  </div>
+                </div>
+
+                <div class="special-action-card">
+                  <div class="sp-text">
+                    <h4>MANUAL REVIVAL / BENCH OVERRIDE</h4>
+                    <p class="muted">In case of referee cards or technical outs, manually send a player out or revive next in queue.</p>
+                  </div>
+                  <div class="sp-btns">
+                    <button id="manualReviveABtn" class="btn btn-micro-action">Revive 1 (Team A)</button>
+                    <button id="manualReviveBBtn" class="btn btn-micro-action">Revive 1 (Team B)</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Live Commentary & Event Log -->
+        <div class="match-feed-card" id="matchFeedCard">
+          <div class="feed-header">
+            <h4>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              MATCH EVENT FEED (WHO SCORED & WHO WENT OUT)
+            </h4>
+            <button id="clearLogBtn" class="btn-text-tiny">Clear Log</button>
+          </div>
+          <div class="feed-items-container" id="feedItemsContainer">
+            <div class="feed-welcome">Match initialized. Select a raider and log the first action!</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+    </div> <!-- end #view_live -->
+
+    <!-- VIEW 2: TOURNAMENT FIXTURES & SCHEDULE -->
+    <div id="view_fixtures" class="tournament-view">
+      <div class="page-hero-banner">
+        <div class="page-hero-info">
+          <h1>📅 TOURNAMENT SCHEDULE & FIXTURES</h1>
+          <p>Official match timetable, court assignments, and live scoreboard links.</p>
+        </div>
+        <div class="page-hero-actions">
+          <button class="btn btn-primary btn-tiny" data-goto-view="live">⚡ Watch Active Match</button>
+        </div>
+      </div>
+
+      <div class="fixtures-container">
+        <div class="fixtures-filter-bar">
+          <div class="fixtures-tabs" id="fixturesFilterTabs">
+            <button class="fixtures-tab-btn active" data-filter="all">All Matches (6)</button>
+            <button class="fixtures-tab-btn" data-filter="live">🔴 Live Now</button>
+            <button class="fixtures-tab-btn" data-filter="upcoming">Upcoming</button>
+            <button class="fixtures-tab-btn" data-filter="completed">Completed</button>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">
+            🏟️ <strong>Tournament Arena:</strong> Ground Mat 1
+          </div>
+        </div>
+
+        <div class="fixtures-grid" id="fixturesGrid">
+          <!-- Rendered via js/tournament.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: POINTS TABLE & STANDINGS -->
+    <div id="view_standings" class="tournament-view">
+      <div class="page-hero-banner">
+        <div class="page-hero-info">
+          <h1>🏆 LEAGUE POINTS TABLE & STANDINGS</h1>
+          <p>Live rankings, match statistics, score differentials, and recent form.</p>
+        </div>
+        <div class="page-hero-actions">
+          <button class="btn btn-secondary btn-tiny" data-goto-view="fixtures">📅 View Schedule</button>
+        </div>
+      </div>
+
+      <div class="standings-container">
+        <div class="standings-card">
+          <div style="overflow-x: auto;">
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">Rank</th>
+                  <th>Team</th>
+                  <th title="Played">P</th>
+                  <th title="Won">W</th>
+                  <th title="Lost">L</th>
+                  <th title="Tied">T</th>
+                  <th title="Score Difference">Diff</th>
+                  <th title="Total Tournament Points">PTS</th>
+                  <th>Form</th>
+                </tr>
+              </thead>
+              <tbody id="standingsTableBody">
+                <!-- Rendered via js/tournament.js -->
+              </tbody>
+            </table>
+          </div>
+          <div style="padding: 12px 18px; font-size: 0.75rem; color: var(--text-muted); background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <span>ℹ️ <strong>Win = 5 Pts</strong>, Tie = 3 Pts, Loss by &le;7 = 1 Pt.</span>
+            <span style="color: var(--accent-gold);">⚡ Top 4 teams qualify for Playoffs & Finals</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 4: TEAMS & SQUADS -->
+    <div id="view_teams" class="tournament-view">
+      <div class="page-hero-banner">
+        <div class="page-hero-info">
+          <h1>👥 PARTICIPATING TEAMS & SQUADS</h1>
+          <p>Official 7-player court lineups, substitutes bench, captains, and coaches.</p>
+        </div>
+        <div class="page-hero-actions">
+          <button class="btn btn-outline-gold btn-tiny" data-goto-view="live">⚡ Go to Scoreboard</button>
+        </div>
+      </div>
+
+      <div class="teams-container">
+        <div class="teams-grid" id="teamsGrid">
+          <!-- Rendered via js/tournament.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 5: MATCH ARCHIVES PAGE -->
+    <div id="view_archives" class="tournament-view">
+      <div class="page-hero-banner">
+        <div class="page-hero-info">
+          <h1>📁 MATCH ARCHIVES & OFFICIAL RESULTS</h1>
+          <p>Complete historical match summaries, final scores, MVPs, and player scorecards.</p>
+        </div>
+        <div class="page-hero-actions">
+          <div class="history-stats-pill" style="margin: 0;">
+            Stored: <strong id="archivesPageCount">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="fixtures-container">
+        <div class="fixtures-grid" id="archivesPageGrid">
+          <!-- Rendered via js/tournament.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 6: SCORER & ORGANIZER PORTAL -->
+    <div id="view_portal" class="tournament-view">
+      <div class="page-hero-banner">
+        <div class="page-hero-info">
+          <h1>👑 OFFICIAL SCORER & OPERATOR HUB</h1>
+          <p>Single-person referee console, tournament credentials, match loading, and display links.</p>
+        </div>
+        <div class="page-hero-actions">
+          <span id="portalAuthStatusTag" class="badge status-live">Checking Role...</span>
+        </div>
+      </div>
+
+      <div class="portal-container">
+        <div class="portal-grid">
+          <!-- Card 1: Scorer Credentials Management -->
+          <div class="portal-card">
+            <div class="portal-card-header">
+              <span style="font-size: 1.4rem;">🔑</span>
+              <h3>Scorer ID & Password Settings</h3>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px;">
+              Only the person with this ID & Password has access to scoring controls, timers, and team edits.
+            </p>
+            <div class="portal-form-group">
+              <label>Current Password / PIN:</label>
+              <input type="password" id="portalCurrentPass" class="form-input" placeholder="Current password (default: 1234)">
+            </div>
+            <div class="portal-form-group">
+              <label>New Scorer ID / Username:</label>
+              <input type="text" id="portalNewId" class="form-input" placeholder="e.g. tournament_ref" value="admin">
+            </div>
+            <div class="portal-form-group">
+              <label>New Password (min 4 chars):</label>
+              <input type="password" id="portalNewPass" class="form-input" placeholder="Enter new password">
+            </div>
+            <div class="portal-form-group">
+              <label>Confirm New Password:</label>
+              <input type="password" id="portalConfirmPass" class="form-input" placeholder="Confirm password">
+            </div>
+            <div id="portalCredMsg" class="hidden" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 12px;"></div>
+            <button id="portalSaveCredsBtn" class="btn btn-primary" style="width: 100%;">💾 Save Scorer Credentials</button>
+          </div>
+
+          <!-- Card 2: Tournament Display & Share Links -->
+          <div class="portal-card">
+            <div class="portal-card-header">
+              <span style="font-size: 1.4rem;">📡</span>
+              <h3>Broadcast & Mobile Display Links</h3>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px;">
+              Share spectator links with audience members or project onto stadium TV screens.
+            </p>
+
+            <div class="mobile-url-box" style="margin-bottom: 14px;">
+              <span class="url-label">Spectator Live Link (Audience):</span>
+              <div class="url-input-wrap">
+                <input type="text" id="portalSpectatorUrl" readonly value="http://localhost:8081/?role=viewer" class="form-input mobile-url-input">
+                <button id="portalCopyViewerBtn" class="btn btn-secondary btn-copy">📋 Copy</button>
+              </div>
+            </div>
+
+            <div class="mobile-url-box" style="margin-bottom: 14px;">
+              <span class="url-label">Scorer Operator Link:</span>
+              <div class="url-input-wrap">
+                <input type="text" id="portalScorerUrl" readonly value="http://localhost:8081/?role=scorer" class="form-input mobile-url-input">
+                <button id="portalCopyScorerBtn" class="btn btn-secondary btn-copy">📋 Copy</button>
+              </div>
+            </div>
+
+            <div style="background: rgba(255, 184, 0, 0.08); border: 1px solid rgba(255, 184, 0, 0.2); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 16px;">
+              <strong style="color: var(--accent-gold); font-size: 0.85rem;">📺 Full-Screen Stadium TV Mode:</strong>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">
+                Connect HDMI cable from laptop to TV or projector, open Live Scoreboard, and press <strong>F11</strong>.
+              </p>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-primary" style="flex: 1;" data-goto-view="live">⚡ Go to Scoreboard</button>
+              <button class="btn btn-secondary" style="flex: 1;" data-goto-view="fixtures">📅 View Schedule</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 1: Team & Player Setup -->
+    <div class="modal-backdrop hidden" id="setupModal">
+      <div class="modal-dialog modal-large">
+        <div class="modal-header">
+          <h3>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            MATCH & TEAM SETUP
+          </h3>
+          <button class="modal-close-btn" id="closeSetupModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Preset Teams quick bar -->
+          <div class="preset-bar">
+            <span>Quick Presets:</span>
+            <button class="preset-btn" data-preset="pro1">Patna Warriors vs Bengal Tigers</button>
+            <button class="preset-btn" data-preset="pro2">U Mumba vs Jaipur Pink Panthers</button>
+            <button class="preset-btn" data-preset="pro3">Bengaluru Bulls vs Dabang Delhi</button>
+          </div>
+
+          <div class="teams-setup-grid">
+            <!-- Team A Setup -->
+            <div class="team-setup-column" id="teamASetupCol">
+              <div class="setup-col-header">
+                <h4>TEAM A DETAILS</h4>
+              </div>
+              <div class="form-row">
+                <label>Team Name:</label>
+                <input type="text" id="setupTeamAName" value="PATNA WARRIORS" class="form-input">
+              </div>
+              <div class="form-row">
+                <label>Color Theme:</label>
+                <div class="color-picker-row">
+                  <input type="color" id="setupTeamAColor" value="#FF6B00" class="color-swatch-input">
+                  <span class="color-hex-tag" id="teamAColorHex">#FF6B00</span>
+                </div>
+              </div>
+
+              <div class="roster-setup-section">
+                <h5>Starting 7 Players (Team A)</h5>
+                <div class="roster-inputs-list" id="teamARosterInputs">
+                  <!-- Generated via JS -->
+                </div>
+              </div>
+
+              <div class="roster-setup-section">
+                <h5>Substitute Players (Team A - Up to 5)</h5>
+                <div class="roster-inputs-list sub-roster-list" id="teamASubInputs">
+                  <!-- Generated via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Team B Setup -->
+            <div class="team-setup-column" id="teamBSetupCol">
+              <div class="setup-col-header">
+                <h4>TEAM B DETAILS</h4>
+              </div>
+              <div class="form-row">
+                <label>Team Name:</label>
+                <input type="text" id="setupTeamBName" value="BENGAL TIGERS" class="form-input">
+              </div>
+              <div class="form-row">
+                <label>Color Theme:</label>
+                <div class="color-picker-row">
+                  <input type="color" id="setupTeamBColor" value="#00B4D8" class="color-swatch-input">
+                  <span class="color-hex-tag" id="teamBColorHex">#00B4D8</span>
+                </div>
+              </div>
+
+              <div class="roster-setup-section">
+                <h5>Starting 7 Players (Team B)</h5>
+                <div class="roster-inputs-list" id="teamBRosterInputs">
+                  <!-- Generated via JS -->
+                </div>
+              </div>
+
+              <div class="roster-setup-section">
+                <h5>Substitute Players (Team B - Up to 5)</h5>
+                <div class="roster-inputs-list sub-roster-list" id="teamBSubInputs">
+                  <!-- Generated via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelSetupBtn">Cancel</button>
+          <button class="btn btn-primary" id="saveSetupBtn">Save & Apply Lineups</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 2: Detailed Match Statistics -->
+    <div class="modal-backdrop hidden" id="statsModal">
+      <div class="modal-dialog modal-xlarge">
+        <div class="modal-header">
+          <h3>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 12l-4-4-4 4M12 16V9"/></svg>
+            OFFICIAL MATCH SCORECARD & PLAYER PERFORMANCE
+          </h3>
+          <button class="modal-close-btn" id="closeStatsModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="scorecard-summary-card">
+            <div class="summary-team">
+              <h2 id="statsSummaryTeamA">Patna Warriors</h2>
+              <div class="stat-big-score" id="statsScoreA">0</div>
+            </div>
+            <div class="summary-middle">
+              <span class="status-chip" id="statsMatchStatus">1st Half</span>
+              <div class="time-elapsed-tag">Match Time: <span id="statsMatchTime">20:00</span></div>
+            </div>
+            <div class="summary-team text-right">
+              <h2 id="statsSummaryTeamB">Bengal Tigers</h2>
+              <div class="stat-big-score" id="statsScoreB">0</div>
+            </div>
+          </div>
+
+          <!-- Comparison Bar -->
+          <div class="match-stat-bars">
+            <div class="stat-bar-row">
+              <span class="stat-bar-val left" id="statsRaidPtsA">0</span>
+              <span class="stat-bar-title">Raid Points</span>
+              <span class="stat-bar-val right" id="statsRaidPtsB">0</span>
+            </div>
+            <div class="stat-bar-track">
+              <div class="bar-fill left" id="barFillRaidA" style="width: 50%"></div>
+              <div class="bar-fill right" id="barFillRaidB" style="width: 50%"></div>
+            </div>
+
+            <div class="stat-bar-row">
+              <span class="stat-bar-val left" id="statsTacklePtsA">0</span>
+              <span class="stat-bar-title">Tackle Points</span>
+              <span class="stat-bar-val right" id="statsTacklePtsB">0</span>
+            </div>
+            <div class="stat-bar-track">
+              <div class="bar-fill left" id="barFillTackleA" style="width: 50%"></div>
+              <div class="bar-fill right" id="barFillTackleB" style="width: 50%"></div>
+            </div>
+
+            <div class="stat-bar-row">
+              <span class="stat-bar-val left" id="statsAllOutPtsA">0</span>
+              <span class="stat-bar-title">All-Out Points</span>
+              <span class="stat-bar-val right" id="statsAllOutPtsB">0</span>
+            </div>
+            <div class="stat-bar-track">
+              <div class="bar-fill left" id="barFillAllOutA" style="width: 50%"></div>
+              <div class="bar-fill right" id="barFillAllOutB" style="width: 50%"></div>
+            </div>
+
+            <div class="stat-bar-row">
+              <span class="stat-bar-val left" id="statsSuperRaidA">0</span>
+              <span class="stat-bar-title">🔥 Super Raids (&ge;3 Pts)</span>
+              <span class="stat-bar-val right" id="statsSuperRaidB">0</span>
+            </div>
+            <div class="stat-bar-track">
+              <div class="bar-fill left" id="barFillSuperRaidA" style="width: 50%"></div>
+              <div class="bar-fill right" id="barFillSuperRaidB" style="width: 50%"></div>
+            </div>
+          </div>
+
+          <!-- Detailed Player Tables -->
+          <div class="stats-tables-container">
+            <div class="stats-team-table-wrap">
+              <h4 id="statsTableTitleA">Team A Performance</h4>
+              <div class="table-responsive">
+                <table class="player-stat-table" id="tableTeamA">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Player</th>
+                      <th>Role</th>
+                      <th>Total</th>
+                      <th>Raid (T/B)</th>
+                      <th>SR</th>
+                      <th>Tackles</th>
+                      <th>Outs</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbodyTeamA">
+                    <!-- Generated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="stats-team-table-wrap">
+              <h4 id="statsTableTitleB">Team B Performance</h4>
+              <div class="table-responsive">
+                <table class="player-stat-table" id="tableTeamB">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Player</th>
+                      <th>Role</th>
+                      <th>Total</th>
+                      <th>Raid (T/B)</th>
+                      <th>SR</th>
+                      <th>Tackles</th>
+                      <th>Outs</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbodyTeamB">
+                    <!-- Generated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="openArchivesFromStatsBtn">📁 Match Archives</button>
+          <button class="btn btn-secondary" id="exportScorecardBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export JSON Summary
+          </button>
+          <button class="btn btn-primary" id="printScorecardBtn">Print / Save PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 3: Connect on Mobile Phone / Share Link -->
+    <div class="modal-backdrop hidden" id="mobileModal">
+      <div class="modal-dialog modal-small">
+        <div class="modal-header">
+          <h3>
+            <span>📱</span>
+            MOBILE & SCREEN CONNECT
+          </h3>
+          <button class="modal-close-btn" id="closeMobileModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-body text-center">
+          <!-- Role selector tabs for QR/URL -->
+          <div class="mobile-role-tabs">
+            <button class="m-role-tab active" id="tabMobileViewer">
+              <span>👁️</span>
+              <span>Audience (Watch Only)</span>
+            </button>
+            <button class="m-role-tab" id="tabMobileScorer">
+              <span>👑</span>
+              <span>Official Scorer</span>
+            </button>
+          </div>
+
+          <!-- Tab Content 1: Audience / Spectator -->
+          <div class="m-role-content" id="mContentViewer">
+            <p class="mobile-instruction"><strong>Share with Audience, Fans & Big Screens:</strong><br>Watch live scores, court visualizer & timers in real-time with all controls securely locked.</p>
+            
+            <div class="qr-box-card">
+              <img id="mobileQrImgViewer" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=http://10.126.219.251:8081/?role=viewer" alt="Spectator QR Code" class="qr-image" width="220" height="220">
+            </div>
+
+            <div class="mobile-url-box">
+              <span class="url-label">Spectator Link:</span>
+              <div class="url-input-wrap">
+                <input type="text" id="mobileUrlInputViewer" readonly value="http://10.126.219.251:8081/?role=viewer" class="form-input mobile-url-input">
+                <button id="copyViewerUrlBtn" class="btn btn-secondary btn-copy" title="Copy Spectator Link">📋 Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content 2: Scorer -->
+          <div class="m-role-content hidden" id="mContentScorer">
+            <p class="mobile-instruction"><strong>Official Scorer Access (ONE PERSON ONLY):</strong><br>Full scoring desk, timer control & substitutions. Protected by Scorer PIN.</p>
+            
+            <div class="qr-box-card">
+              <img id="mobileQrImgScorer" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=http://10.126.219.251:8081/?role=scorer" alt="Scorer QR Code" class="qr-image" width="220" height="220">
+            </div>
+
+            <div class="mobile-url-box">
+              <span class="url-label">Scorer Link:</span>
+              <div class="url-input-wrap">
+                <input type="text" id="mobileUrlInputScorer" readonly value="http://10.126.219.251:8081/?role=scorer" class="form-input mobile-url-input">
+                <button id="copyScorerUrlBtn" class="btn btn-secondary btn-copy" title="Copy Scorer Link">📋 Copy</button>
+              </div>
+            </div>
+
+            <div class="pin-badge-reminder">
+              <span>🔑 Default Scorer PIN: <strong>1234</strong></span>
+            </div>
+          </div>
+
+          <div class="mobile-tips-card">
+            <div class="tip-item">📶 <strong>Same Wi-Fi:</strong> Ensure phone and PC are connected to Wi-Fi (IP: <code>10.126.219.251</code>).</div>
+            <div class="tip-item">📲 <strong>Full Screen App:</strong> In Safari/Chrome, tap <em>"Add to Home Screen"</em>.</div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="closeMobileModalFooterBtn">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 4: Editable Clocks Modal -->
+    <div class="modal-backdrop hidden" id="clockModal">
+      <div class="modal-dialog modal-small">
+        <div class="modal-header">
+          <h3>
+            <span>⏱️</span>
+            EDIT MATCH & RAID CLOCKS
+          </h3>
+          <button class="modal-close-btn" id="closeClockModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Match Clock Adjuster -->
+          <div class="clock-edit-card">
+            <h4>MATCH CLOCK TIME</h4>
+            <div class="clock-inputs-row">
+              <div class="clock-field">
+                <label>Minutes:</label>
+                <input type="number" id="clockEditMinutes" min="0" max="60" value="20" class="form-input time-input">
+              </div>
+              <span class="clock-sep">:</span>
+              <div class="clock-field">
+                <label>Seconds:</label>
+                <input type="number" id="clockEditSeconds" min="0" max="59" value="0" class="form-input time-input">
+              </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="clock-presets-row">
+              <button class="btn-clock-preset" data-min="20" data-sec="0">20:00 (Full)</button>
+              <button class="btn-clock-preset" data-min="15" data-sec="0">15:00</button>
+              <button class="btn-clock-preset" data-min="10" data-sec="0">10:00</button>
+              <button class="btn-clock-preset" data-min="5" data-sec="0">05:00</button>
+              <button class="btn-clock-adjust" data-adj="60">+1 Min</button>
+              <button class="btn-clock-adjust" data-adj="-60">-1 Min</button>
+            </div>
+          </div>
+
+          <!-- Raid Clock Adjuster -->
+          <div class="clock-edit-card">
+            <h4>RAID CLOCK (SECONDS)</h4>
+            <div class="clock-inputs-row">
+              <div class="clock-field">
+                <label>Raid Seconds (1 - 60s):</label>
+                <input type="number" id="clockEditRaidSeconds" min="5" max="60" value="30" class="form-input time-input">
+              </div>
+            </div>
+
+            <div class="clock-presets-row">
+              <button class="btn-raid-preset" data-sec="30">30s (Default)</button>
+              <button class="btn-raid-preset" data-sec="20">20s</button>
+              <button class="btn-raid-preset" data-sec="15">15s</button>
+              <button class="btn-raid-adjust" data-adj="5">+5s</button>
+              <button class="btn-raid-adjust" data-adj="-5">-5s</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelClockModalBtn">Cancel</button>
+          <button class="btn btn-primary" id="saveClockModalBtn">Apply Time Adjustments</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 5: Player Substitution Modal -->
+    <div class="modal-backdrop hidden" id="substitutionModal">
+      <div class="modal-dialog modal-medium">
+        <div class="modal-header">
+          <h3>
+            <span>🔄</span>
+            PLAYER SUBSTITUTION
+          </h3>
+          <button class="modal-close-btn" id="closeSubModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="sub-team-switcher">
+            <span class="sub-lbl">Select Team:</span>
+            <div class="team-toggle-pill">
+              <button id="subSelectTeamABtn" class="team-toggle-btn active-raiding-a">Team A</button>
+              <button id="subSelectTeamBBtn" class="team-toggle-btn">Team B</button>
+            </div>
+          </div>
+
+          <div class="sub-grid-container">
+            <!-- Step 1: On Court Player to Leave -->
+            <div class="sub-column">
+              <div class="sub-col-title">
+                <span class="step-num">1</span>
+                <span>Select On-Court Player to EXIT:</span>
+              </div>
+              <div class="sub-players-selector-list" id="subOnCourtList">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+
+            <!-- Step 2: Substitute Player to Enter -->
+            <div class="sub-column">
+              <div class="sub-col-title">
+                <span class="step-num">2</span>
+                <span>Select Substitute to ENTER COURT:</span>
+              </div>
+              <div class="sub-players-selector-list" id="subAvailableList">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+
+          <div class="sub-summary-banner" id="subSummaryBanner">
+            Select one on-court player and one substitute to swap.
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelSubModalBtn">Cancel</button>
+          <button class="btn btn-primary" id="confirmSubModalBtn" disabled>Confirm Player Swap</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 6: Save & End Match Modal -->
+    <div class="modal-backdrop hidden" id="saveMatchModal">
+      <div class="modal-dialog modal-small">
+        <div class="modal-header">
+          <h3>
+            <span>💾</span>
+            SAVE MATCH SUMMARY TO ARCHIVES
+          </h3>
+          <button class="modal-close-btn" id="closeSaveMatchModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="save-match-preview-card" id="saveMatchPreview">
+            <!-- Dynamic match summary preview -->
+          </div>
+
+          <div class="form-row">
+            <label>Match Title / Tournament Name:</label>
+            <input type="text" id="saveMatchTitleInput" class="form-input" placeholder="e.g. Pro Tournament Match #4">
+          </div>
+
+          <div class="form-row">
+            <label>Notes / Round / Referee:</label>
+            <input type="text" id="saveMatchNotesInput" class="form-input" placeholder="e.g. Final, Court 1, Referee Sachin">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelSaveMatchModalBtn">Cancel</button>
+          <button class="btn btn-primary" id="confirmSaveMatchBtn">💾 Save Summary & Archive</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 7: Match Archives & History Browser -->
+    <div class="modal-backdrop hidden" id="historyModal">
+      <div class="modal-dialog modal-xlarge">
+        <div class="modal-header">
+          <h3>
+            <span>📁</span>
+            MATCH HISTORY & ARCHIVES (STORED SUMMARIES)
+          </h3>
+          <button class="modal-close-btn" id="closeHistoryModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="history-top-bar">
+            <div class="history-stats-pill">
+              Stored Matches: <strong id="historyCountDisplay">0</strong>
+            </div>
+            <div class="history-actions-row">
+              <button class="btn btn-secondary btn-tiny-action" id="exportAllArchivesBtn">📥 Export All (JSON)</button>
+              <button class="btn btn-danger-micro" id="clearAllArchivesBtn">🗑️ Clear History</button>
+            </div>
+          </div>
+
+          <div class="history-cards-container" id="historyCardsContainer">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="closeHistoryModalFooterBtn">Close History</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 8: Quick Rename Team Modal -->
+    <div class="modal-backdrop hidden" id="renameModal">
+      <div class="modal-dialog modal-small">
+        <div class="modal-header">
+          <h3>
+            <span>✏️</span>
+            RENAME TEAM
+          </h3>
+          <button class="modal-close-btn" id="closeRenameModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" id="renameTeamTargetKey" value="teamA">
+          <div class="form-row">
+            <label id="renameTeamLabel">Enter New Name for Team:</label>
+            <input type="text" id="renameTeamInput" class="form-input" placeholder="e.g. PATNA WARRIORS">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelRenameModalBtn">Cancel</button>
+          <button class="btn btn-primary" id="saveRenameBtn">Save Team Name</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 9: Scorer Authentication & Login Modal -->
+    <div class="modal-backdrop hidden" id="scorerAuthModal">
+      <div class="modal-dialog modal-small">
+        <div class="modal-header">
+          <h3>
+            <span>🔑</span>
+            OFFICIAL SCORER LOGIN
+          </h3>
+          <button class="modal-close-btn" id="closeScorerAuthModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-body text-center">
+          <div class="auth-icon-badge">👑</div>
+          <p class="auth-instruction">Only <strong>ONE authorized person</strong> can operate scoring, clocks & substitutions.<br>Audience & spectators watch the live broadcast in real time.</p>
+          
+          <!-- Mode Tabs: ID & Password vs Quick PIN -->
+          <div class="mobile-role-tabs" style="margin-bottom: 14px;">
+            <button type="button" class="m-role-tab active" id="tabLoginIdPass">
+              <span>👤</span> ID & Password
+            </button>
+            <button type="button" class="m-role-tab" id="tabLoginPin">
+              <span>🔢</span> Numeric PIN
+            </button>
+          </div>
+
+          <!-- Section 1: ID & Password Login -->
+          <div id="loginIdPassSection" style="text-align: left; margin-bottom: 12px;">
+            <div class="form-row" style="margin-bottom: 10px;">
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; display: block;">Scorer ID / Username:</label>
+              <input type="text" id="scorerIdInput" class="form-input" value="admin" placeholder="e.g. admin" autocomplete="username" style="width: 100%;">
+            </div>
+            <div class="form-row" style="margin-bottom: 6px;">
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; display: block;">Scorer Password:</label>
+              <input type="password" id="scorerPassInput" class="form-input" placeholder="Enter password (default: 1234)" autocomplete="current-password" style="width: 100%;">
+            </div>
+          </div>
+
+          <!-- Section 2: Numeric PIN Keypad Login (Alternative) -->
+          <div id="loginPinSection" class="hidden">
+            <div class="pin-display-wrap">
+              <input type="password" id="scorerPinInput" maxlength="6" class="pin-input" placeholder="● ● ● ●" autocomplete="off" inputmode="numeric">
+            </div>
+
+            <div class="keypad-grid" id="pinKeypad">
+              <button class="keypad-btn" data-key="1">1</button>
+              <button class="keypad-btn" data-key="2">2</button>
+              <button class="keypad-btn" data-key="3">3</button>
+              <button class="keypad-btn" data-key="4">4</button>
+              <button class="keypad-btn" data-key="5">5</button>
+              <button class="keypad-btn" data-key="6">6</button>
+              <button class="keypad-btn" data-key="7">7</button>
+              <button class="keypad-btn" data-key="8">8</button>
+              <button class="keypad-btn" data-key="9">9</button>
+              <button class="keypad-btn keypad-clear" data-key="C">C</button>
+              <button class="keypad-btn" data-key="0">0</button>
+              <button class="keypad-btn keypad-backspace" data-key="backspace">⌫</button>
+            </div>
+          </div>
+
+          <div class="pin-hint-tag">
+            <span>ℹ️ Default Scorer ID: <strong>admin</strong> | Password: <strong>1234</strong></span>
+          </div>
+          <div id="scorerAuthError" class="auth-error-msg hidden">Incorrect Scorer ID or Password.</div>
+
+          <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <button class="btn btn-outline-gold" id="quickUnlockScorerBtn" style="width: 100%; font-weight: 800; padding: 10px 14px; font-size: 0.9rem;">⚡ 1-Click Quick Unlock (Default: admin / 1234)</button>
+            <button type="button" class="btn btn-secondary btn-tiny" id="openChangeCredsFromLoginBtn" style="font-size: 0.8rem; padding: 6px 10px;">⚙️ Create / Change Scorer ID & Password</button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelScorerAuthBtn">Stay in Watch Mode</button>
+          <button class="btn btn-primary" id="submitScorerPinBtn">Unlock Scorer Controls</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 10: Create / Change Scorer ID & Password Modal -->
+    <div class="modal-backdrop hidden" id="changeCredsModal">
+      <div class="modal-dialog modal-small">
+        <div class="modal-header">
+          <h3>
+            <span>🔑</span>
+            CREATE / CHANGE SCORER CREDENTIALS
+          </h3>
+          <button class="modal-close-btn" id="closeChangeCredsModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <p class="auth-instruction">Set a custom Scorer ID & Password for tomorrow's tournament. Only the person with this ID & Password will have control of the scoreboard.</p>
+          
+          <div class="form-row" style="margin-bottom: 12px;">
+            <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Current Password / PIN:</label>
+            <input type="password" id="currentCredPassInput" class="form-input" placeholder="Current password (default: 1234)" style="width: 100%;">
+          </div>
+
+          <div class="form-row" style="margin-bottom: 12px;">
+            <label style="font-size: 0.82rem; font-weight: 700; color: var(--accent-gold); display: block; margin-bottom: 4px;">New Scorer ID / Username:</label>
+            <input type="text" id="newScorerIdInput" class="form-input" placeholder="e.g. scorer1 or tournament_ref" style="width: 100%;">
+          </div>
+
+          <div class="form-row" style="margin-bottom: 12px;">
+            <label style="font-size: 0.82rem; font-weight: 700; color: var(--accent-gold); display: block; margin-bottom: 4px;">New Password (Min 4 chars):</label>
+            <input type="password" id="newScorerPassInput" class="form-input" placeholder="e.g. kabaddi2026" style="width: 100%;">
+          </div>
+
+          <div class="form-row" style="margin-bottom: 12px;">
+            <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Confirm New Password:</label>
+            <input type="password" id="confirmNewScorerPassInput" class="form-input" placeholder="Re-enter new password" style="width: 100%;">
+          </div>
+
+          <div id="changeCredsError" class="auth-error-msg hidden" style="text-align: center;"></div>
+          <div id="changeCredsSuccess" class="hidden" style="color: #10B981; font-weight: 700; font-size: 0.85rem; text-align: center; margin-top: 8px;"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelChangeCredsBtn">Cancel</button>
+          <button class="btn btn-primary" id="saveChangeCredsBtn">💾 Save New Credentials</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Audio FX (Web Audio API synthetic synthesizer fallback) -->
+  </div>
+
+  <script src="js/audio.js?v=3.1"></script>
+  <script src="js/engine.js?v=3.1"></script>
+  <script src="js/ui.js?v=3.1"></script>
+  <script src="js/app.js?v=3.1"></script>
+  <script src="js/tournament.js?v=3.2"></script>
+</body>
+</html>

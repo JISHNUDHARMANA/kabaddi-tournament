@@ -1,0 +1,80 @@
+[
+  {
+    "rank": 1,
+    "teamId": "team_patna",
+    "name": "Patna Warriors",
+    "short": "PAT",
+    "played": 1,
+    "won": 1,
+    "lost": 0,
+    "tied": 0,
+    "scoreDiff": 7,
+    "points": 5,
+    "form": ["W"]
+  },
+  {
+    "rank": 2,
+    "teamId": "team_mumbai",
+    "name": "Mumbai Warriors",
+    "short": "MUM",
+    "played": 1,
+    "won": 1,
+    "lost": 0,
+    "tied": 0,
+    "scoreDiff": 7,
+    "points": 5,
+    "form": ["W"]
+  },
+  {
+    "rank": 3,
+    "teamId": "team_bengaluru",
+    "name": "Bengaluru Bulls",
+    "short": "BLR",
+    "played": 0,
+    "won": 0,
+    "lost": 0,
+    "tied": 0,
+    "scoreDiff": 0,
+    "points": 0,
+    "form": []
+  },
+  {
+    "rank": 4,
+    "teamId": "team_jaipur",
+    "name": "Jaipur Panthers",
+    "short": "JAI",
+    "played": 0,
+    "won": 0,
+    "lost": 0,
+    "tied": 0,
+    "scoreDiff": 0,
+    "points": 0,
+    "form": []
+  },
+  {
+    "rank": 5,
+    "teamId": "team_tamil",
+    "name": "Tamil Thalas",
+    "short": "TAM",
+    "played": 0,
+    "won": 0,
+    "lost": 0,
+    "tied": 0,
+    "scoreDiff": 0,
+    "points": 0,
+    "form": []
+  },
+  {
+    "rank": 6,
+    "teamId": "team_bengal",
+    "name": "Bengal Tigers",
+    "short": "BEN",
+    "played": 2,
+    "won": 0,
+    "lost": 2,
+    "tied": 0,
+    "scoreDiff": -14,
+    "points": 1,
+    "form": ["L", "L"]
+  }
+]
