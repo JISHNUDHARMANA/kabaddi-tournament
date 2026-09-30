@@ -904,7 +904,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Prepopulate active scorer ID from local config
+  if (scorerIdInput && engine && engine.getLocalScorerConfig) {
+    const initCfg = engine.getLocalScorerConfig();
+    if (initCfg.scorerId) {
+      scorerIdInput.value = initCfg.scorerId;
+    }
+  }
+
   function openScorerAuth() {
+    const localCfg = (engine && engine.getLocalScorerConfig) ? engine.getLocalScorerConfig() : { scorerId: 'admin' };
+    if (scorerIdInput) scorerIdInput.value = localCfg.scorerId || 'admin';
     if (scorerPassInput) scorerPassInput.value = '';
     if (scorerPinInput) scorerPinInput.value = '';
     if (scorerAuthError) scorerAuthError.classList.add('hidden');
@@ -952,7 +962,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if ('vibrate' in navigator) navigator.vibrate([80, 50, 80]);
     } else {
       if (scorerAuthError) {
-        scorerAuthError.textContent = res.error || 'Incorrect ID or Password. Default is admin / 1234.';
+        scorerAuthError.textContent = res.error || 'Incorrect ID or Password.';
         scorerAuthError.classList.remove('hidden');
       }
       if (scorerPassInput) {
@@ -966,9 +976,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (quickUnlockScorerBtn) {
     quickUnlockScorerBtn.addEventListener('click', () => {
-      if (scorerIdInput) scorerIdInput.value = 'admin';
-      if (scorerPassInput) scorerPassInput.value = '1234';
-      if (scorerPinInput) scorerPinInput.value = '1234';
+      const cfg = (engine && engine.getLocalScorerConfig) ? engine.getLocalScorerConfig() : { scorerId: 'admin', scorerPass: '1234', scorerPin: '1234' };
+      if (scorerIdInput) scorerIdInput.value = cfg.scorerId || 'admin';
+      if (scorerPassInput) scorerPassInput.value = cfg.scorerPass || '1234';
+      if (scorerPinInput) scorerPinInput.value = cfg.scorerPin || '1234';
       handlePinSubmit();
     });
   }
@@ -976,8 +987,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Change Scorer Credentials Dialog
   function openChangeCreds() {
     if (scorerAuthModal) scorerAuthModal.classList.add('hidden');
+    const localCfg = (engine && engine.getLocalScorerConfig) ? engine.getLocalScorerConfig() : { scorerId: 'admin' };
     if (currentCredPassInput) currentCredPassInput.value = '';
-    if (newScorerIdInput) newScorerIdInput.value = (scorerIdInput ? scorerIdInput.value : 'admin');
+    if (newScorerIdInput) newScorerIdInput.value = localCfg.scorerId || (scorerIdInput ? scorerIdInput.value : 'admin');
     if (newScorerPassInput) newScorerPassInput.value = '';
     if (confirmNewScorerPassInput) confirmNewScorerPassInput.value = '';
     if (changeCredsError) changeCredsError.classList.add('hidden');

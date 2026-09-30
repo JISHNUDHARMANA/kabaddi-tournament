@@ -572,6 +572,15 @@
       const scorerInput = document.getElementById('portalScorerUrl');
       if (scorerInput) scorerInput.value = `${origin}/?role=scorer`;
 
+      // Update current Scorer ID in portal
+      const localCfg = (window.kabaddiEngine && window.kabaddiEngine.getLocalScorerConfig)
+        ? window.kabaddiEngine.getLocalScorerConfig()
+        : { scorerId: 'admin' };
+      const portalNewId = document.getElementById('portalNewId');
+      if (portalNewId && (!portalNewId.value || portalNewId.value === 'admin')) {
+        portalNewId.value = localCfg.scorerId || 'admin';
+      }
+
       this.updateNavbarRole();
       this.wirePortalEvents();
     }
