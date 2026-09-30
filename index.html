@@ -45,6 +45,9 @@
       <button class="t-nav-btn" data-target-view="portal">
         <span>👑</span> Scorer Portal
       </button>
+      <button class="t-nav-btn" data-target-view="guide">
+        <span>📖</span> Rules & Guide
+      </button>
     </nav>
 
     <div class="t-nav-right">
@@ -823,6 +826,299 @@
             <div style="display: flex; gap: 8px;">
               <button class="btn btn-primary" style="flex: 1;" data-goto-view="live">⚡ Go to Scoreboard</button>
               <button class="btn btn-secondary" style="flex: 1;" data-goto-view="fixtures">📅 View Schedule</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 7: RULES & OPERATOR GUIDE (README) -->
+    <div id="view_guide" class="tournament-view">
+      <div class="page-hero-banner">
+        <div class="page-hero-info">
+          <h1>📖 TOURNAMENT RULES & USER MANUAL (README)</h1>
+          <p>Official Pro Kabaddi rules, scoring reference, referee console manual, and broadcast setup guide.</p>
+        </div>
+        <div class="page-hero-actions">
+          <button class="btn btn-primary btn-tiny" data-goto-view="live">⚡ Go to Scoreboard</button>
+          <button class="btn btn-outline-gold btn-tiny" data-goto-view="portal">👑 Scorer Portal</button>
+        </div>
+      </div>
+
+      <div class="guide-container">
+        <!-- Official Scorer & Spectator Broadcast Links Box -->
+        <div style="background: linear-gradient(135deg, rgba(255, 107, 0, 0.12), rgba(0, 180, 216, 0.1)); border: 1px solid rgba(255, 184, 0, 0.35); border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.4rem;">🔗</span>
+              <h3 style="margin: 0; color: #fff; font-size: 1.15rem; font-weight: 800; letter-spacing: 0.5px;">OFFICIAL SCORER & SPECTATOR ACCESS LINKS</h3>
+            </div>
+            <span class="badge status-live" style="font-size: 0.75rem;">⚡ Shareable Tournament URLs</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px;">
+            <!-- Scorer Link Box -->
+            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 184, 0, 0.3); border-radius: var(--radius-sm); padding: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <strong style="color: var(--accent-gold); font-size: 0.92rem; display: flex; align-items: center; gap: 6px;">
+                  <span>👑</span> Official Scorer Console
+                </strong>
+                <span class="badge" style="background: rgba(255,184,0,0.2); color: var(--accent-gold); font-size: 0.7rem;">Referee / Operator</span>
+              </div>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
+                Full scoring controls, 30s raid timer, touch/tackle logging, FIFO revivals, and team squad editing. (Login: <code>admin</code> / <code>1234</code>).
+              </p>
+              <div class="url-input-wrap">
+                <input type="text" id="guideScorerUrl" readonly class="form-input mobile-url-input" style="font-size: 0.82rem;" value="http://localhost:8081/?role=scorer">
+                <button id="guideCopyScorerBtn" class="btn btn-primary btn-copy" style="font-size: 0.8rem; padding: 6px 12px;">📋 Copy</button>
+              </div>
+            </div>
+
+            <!-- Spectator Link Box -->
+            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(0, 180, 216, 0.3); border-radius: var(--radius-sm); padding: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <strong style="color: #00B4D8; font-size: 0.92rem; display: flex; align-items: center; gap: 6px;">
+                  <span>👁️</span> Public Audience / Spectator
+                </strong>
+                <span class="badge" style="background: rgba(0,180,216,0.2); color: #00B4D8; font-size: 0.7rem;">Watch-Only / TV Screen</span>
+              </div>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
+                Safe, tamper-proof live scoreboard for fans, coaches, players, and stadium LED projector screens. Scoring controls are locked.
+              </p>
+              <div class="url-input-wrap">
+                <input type="text" id="guideSpectatorUrl" readonly class="form-input mobile-url-input" style="font-size: 0.82rem;" value="http://localhost:8081/?role=viewer">
+                <button id="guideCopySpectatorBtn" class="btn btn-secondary btn-copy" style="font-size: 0.8rem; padding: 6px 12px;">📋 Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Summary Bar -->
+        <div class="guide-quick-bar">
+          <div class="guide-quick-item">
+            <span class="guide-quick-icon">⏱️</span>
+            <div>
+              <strong>20 Min Halves</strong>
+              <small>30s Raid Clock</small>
+            </div>
+          </div>
+          <div class="guide-quick-item">
+            <span class="guide-quick-icon">⚡</span>
+            <div>
+              <strong>1 Pt / Touch</strong>
+              <small>FIFO Revival Order</small>
+            </div>
+          </div>
+          <div class="guide-quick-item">
+            <span class="guide-quick-icon">🛡️</span>
+            <div>
+              <strong>Super Tackle: 2 Pts</strong>
+              <small>When &le; 3 Defenders</small>
+            </div>
+          </div>
+          <div class="guide-quick-item">
+            <span class="guide-quick-icon">🔥</span>
+            <div>
+              <strong>Super Raid: &ge; 3 Pts</strong>
+              <small>All-Out: +2 Bonus Pts</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-grid">
+          <!-- Card 1: Official Kabaddi Rules -->
+          <div class="guide-card">
+            <div class="guide-card-header">
+              <span style="font-size: 1.4rem;">⚡</span>
+              <h3>Official Pro Kabaddi Rules & Scoring</h3>
+            </div>
+            <div class="guide-body">
+              <div class="guide-rule-row">
+                <span class="guide-badge badge-touch">TOUCH POINT</span>
+                <div>
+                  <strong>1 Point per Defender Tagged:</strong>
+                  <p>Raider crosses midline, tags one or more defenders, and successfully returns to their half. Each touched defender is OUT.</p>
+                </div>
+              </div>
+              <div class="guide-rule-row">
+                <span class="guide-badge badge-bonus">BONUS POINT</span>
+                <div>
+                  <strong>1 Point (No Revival):</strong>
+                  <p>Awarded when raider steps one foot across the bonus line with the trailing foot off the ground while at least 6 defenders are on court.</p>
+                </div>
+              </div>
+              <div class="guide-rule-row">
+                <span class="guide-badge badge-tackle">TACKLE POINT</span>
+                <div>
+                  <strong>1 Point for Successful Hold:</strong>
+                  <p>Defenders hold the raider in their half before midline is reached or before the 30-second raid clock expires. Raider is OUT.</p>
+                </div>
+              </div>
+              <div class="guide-rule-row">
+                <span class="guide-badge badge-super">SUPER TACKLE</span>
+                <div>
+                  <strong>2 Points for Defending Team:</strong>
+                  <p>Automatically awarded when defenders execute a successful tackle while having <strong>3 or fewer defenders</strong> on court.</p>
+                </div>
+              </div>
+              <div class="guide-rule-row">
+                <span class="guide-badge badge-allout">ALL-OUT (LONA)</span>
+                <div>
+                  <strong>+2 Extra Points to Attacking Team:</strong>
+                  <p>Awarded when all 7 defenders of the opponent are eliminated. Immediately revives all 7 players onto the court.</p>
+                </div>
+              </div>
+              <div class="guide-rule-row">
+                <span class="guide-badge badge-dord">DO-OR-DIE RAID</span>
+                <div>
+                  <strong>Must-Score 3rd Raid:</strong>
+                  <p>If a team has two consecutive empty raids, the 3rd raid is "Do-or-Die". Raider must score at least 1 point or is declared OUT.</p>
+                </div>
+              </div>
+              <div class="guide-rule-row">
+                <span class="guide-badge badge-revive">FIFO REVIVAL</span>
+                <div>
+                  <strong>First Out, First In Order:</strong>
+                  <p>Players revive in the exact chronological order they were eliminated. The player waiting longest in the sitting block returns first.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Scorer Console Manual -->
+          <div class="guide-card">
+            <div class="guide-card-header">
+              <span style="font-size: 1.4rem;">👑</span>
+              <h3>Official Scorer Console Operations</h3>
+            </div>
+            <div class="guide-body">
+              <ol class="guide-step-list">
+                <li>
+                  <strong>Authentication & Roles:</strong>
+                  <p>Click "🔑 Scorer Login" in top header. Enter PIN (Default: <code>1234</code>) or custom Scorer ID & Password. Once authenticated, controls unlock immediately.</p>
+                </li>
+                <li>
+                  <strong>Setting Up the Match:</strong>
+                  <p>Select match title and teams. You can quick-load scheduled matches from the <strong>📅 Fixtures</strong> view or click <strong>✏️</strong> on team names to rename them.</p>
+                </li>
+                <li>
+                  <strong>Controlling the Clocks:</strong>
+                  <p>Click <strong>▶ / ⏸</strong> on Match Clock and 30s Raid Clock. Click the pencil icon on clocks to set custom minutes/seconds or choose quick presets.</p>
+                </li>
+                <li>
+                  <strong>Scoring a Raid:</strong>
+                  <p>1. Select active raider from court chips. 2. Click tagged defenders (or use presets +1, +2, +3 Super Raid). 3. Check Bonus if achieved. 4. Click <strong>"⚡ Commit Raid Points"</strong>.</p>
+                </li>
+                <li>
+                  <strong>Scoring a Tackle:</strong>
+                  <p>Click "Defending Point (Tackle)" tab. Select which defender made the tackle. Click <strong>"🛡️ Commit Tackle"</strong>. The app automatically detects Super Tackle (2 pts) if &le; 3 defenders.</p>
+                </li>
+                <li>
+                  <strong>Revivals & Bench Management:</strong>
+                  <p>The system automatically revives players in strict FIFO order and handles All-Out resets (+2 pts and full team revival).</p>
+                </li>
+                <li>
+                  <strong>Undo Function:</strong>
+                  <p>Made an accidental click? Click <strong>"↩ Undo"</strong> (or press <code>U</code>) to instantly roll back state.</p>
+                </li>
+                <li>
+                  <strong>Saving Match to Archives:</strong>
+                  <p>Click <strong>"💾 Save Match"</strong> when game finishes. Enter notes to permanently archive scorecard, MVP, and final scores.</p>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Card 3: League Standings & Tournament Points System -->
+          <div class="guide-card">
+            <div class="guide-card-header">
+              <span style="font-size: 1.4rem;">🏆</span>
+              <h3>Tournament Points & Qualification System</h3>
+            </div>
+            <div class="guide-body">
+              <table class="guide-table">
+                <thead>
+                  <tr>
+                    <th>Match Result</th>
+                    <th>Points Awarded</th>
+                    <th>Criteria</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong style="color: #10B981;">WIN</strong></td>
+                    <td><strong class="pts-pill pts-win">5 PTS</strong></td>
+                    <td>Winning team with higher score at final whistle</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #F59E0B;">TIE</strong></td>
+                    <td><strong class="pts-pill pts-tie">3 PTS</strong></td>
+                    <td>Both teams finish with equal points</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #3B82F6;">CLOSE LOSS</strong></td>
+                    <td><strong class="pts-pill pts-loss-close">1 PT</strong></td>
+                    <td>Losing team with margin &le; 7 points</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #EF4444;">LOSS</strong></td>
+                    <td><strong class="pts-pill pts-loss">0 PTS</strong></td>
+                    <td>Losing team with margin &gt; 7 points</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div style="margin-top: 18px; padding: 12px; background: rgba(255,184,0,0.08); border-left: 3px solid var(--accent-gold); border-radius: 4px; font-size: 0.85rem; line-height: 1.5;">
+                <strong style="color: var(--accent-gold);">⚡ Auto-Calculate Feature:</strong>
+                <p style="margin: 4px 0 0 0; color: var(--text-secondary);">
+                  In the <strong>🏆 Points Table</strong> view, click <strong>"⚡ Auto-Calculate"</strong> to automatically recompute all team rankings, match stats, and score differentials directly from completed fixtures!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Broadcast, Screen Share & Shortcuts -->
+          <div class="guide-card">
+            <div class="guide-card-header">
+              <span style="font-size: 1.4rem;">📡</span>
+              <h3>Broadcast, Stadium Screens & Shortcuts</h3>
+            </div>
+            <div class="guide-body">
+              <div style="margin-bottom: 16px;">
+                <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 8px;">📺 Big Screen / Stadium TV Setup:</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+                  Open the public link (<code>/?role=viewer</code>) on the presentation computer connected to your LED wall or TV projector. Press <strong>F11</strong> for borderless full-screen broadcast mode.
+                </p>
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 8px;">🎥 OBS Studio Integration:</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+                  Add a <strong>Browser Source</strong> in OBS with URL <code>https://kabaddi-championship-tournament.vercel.app/?role=viewer</code>. Set Width to <strong>1920</strong> and Height to <strong>1080</strong> for live streaming overlays.
+                </p>
+              </div>
+
+              <div>
+                <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 8px;">⌨️ Referee Keyboard Shortcuts:</h4>
+                <div class="guide-shortcuts-grid">
+                  <div class="guide-shortcut-item">
+                    <kbd>Space</kbd>
+                    <span>Start / Pause 30s Raid Clock</span>
+                  </div>
+                  <div class="guide-shortcut-item">
+                    <kbd>R</kbd>
+                    <span>Reset Raid Clock to 30s</span>
+                  </div>
+                  <div class="guide-shortcut-item">
+                    <kbd>U</kbd>
+                    <span>Undo Last Scoring Action</span>
+                  </div>
+                  <div class="guide-shortcut-item">
+                    <kbd>Esc</kbd>
+                    <span>Close Any Open Dialog / Modal</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

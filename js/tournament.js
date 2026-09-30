@@ -78,6 +78,7 @@
       if (viewName === 'teams') this.renderTeams();
       if (viewName === 'archives') this.renderArchivesView();
       if (viewName === 'portal') this.renderPortal();
+      if (viewName === 'guide') this.renderGuide();
 
       // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -92,7 +93,7 @@
     checkUrlView() {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get('tab');
-      if (tab && ['live', 'fixtures', 'standings', 'teams', 'archives', 'portal'].includes(tab)) {
+      if (tab && ['live', 'fixtures', 'standings', 'teams', 'archives', 'portal', 'guide'].includes(tab)) {
         this.switchView(tab, false);
       }
     }
@@ -1153,6 +1154,11 @@
       const scorerInput = document.getElementById('portalScorerUrl');
       if (scorerInput) scorerInput.value = `${origin}/?role=scorer`;
 
+      const guideSpec = document.getElementById('guideSpectatorUrl');
+      if (guideSpec) guideSpec.value = `${origin}/?role=viewer`;
+      const guideScorer = document.getElementById('guideScorerUrl');
+      if (guideScorer) guideScorer.value = `${origin}/?role=scorer`;
+
       // Update current Scorer ID in portal
       const localCfg = (window.kabaddiEngine && window.kabaddiEngine.getLocalScorerConfig)
         ? window.kabaddiEngine.getLocalScorerConfig()
@@ -1166,9 +1172,51 @@
       this.wirePortalEvents();
     }
 
+    renderGuide() {
+      const origin = window.location.origin;
+      const guideSpec = document.getElementById('guideSpectatorUrl');
+      if (guideSpec) guideSpec.value = `${origin}/?role=viewer`;
+      const guideScorer = document.getElementById('guideScorerUrl');
+      if (guideScorer) guideScorer.value = `${origin}/?role=scorer`;
+      this.wireGuideEvents();
+    }
+
+    wireGuideEvents() {
+      if (this.guideEventsWired) return;
+      this.guideEventsWired = true;
+
+      const guideCopySpec = document.getElementById('guideCopySpectatorBtn');
+      if (guideCopySpec) {
+        guideCopySpec.addEventListener('click', () => {
+          const val = document.getElementById('guideSpectatorUrl')?.value;
+          if (val) {
+            navigator.clipboard.writeText(val);
+            guideCopySpec.textContent = '✅ Copied!';
+            if (window.kabaddiUI) window.kabaddiUI.showToast('📋 Copied Public Spectator Link!', 'info');
+            setTimeout(() => { guideCopySpec.textContent = '📋 Copy'; }, 2000);
+          }
+        });
+      }
+
+      const guideCopyScorer = document.getElementById('guideCopyScorerBtn');
+      if (guideCopyScorer) {
+        guideCopyScorer.addEventListener('click', () => {
+          const val = document.getElementById('guideScorerUrl')?.value;
+          if (val) {
+            navigator.clipboard.writeText(val);
+            guideCopyScorer.textContent = '✅ Copied!';
+            if (window.kabaddiUI) window.kabaddiUI.showToast('👑 Copied Official Scorer Link!', 'super');
+            setTimeout(() => { guideCopyScorer.textContent = '📋 Copy'; }, 2000);
+          }
+        });
+      }
+    }
+
     wirePortalEvents() {
       if (this.portalEventsWired) return;
       this.portalEventsWired = true;
+
+      this.wireGuideEvents();
 
       // Fixtures filter tabs
       const filterTabs = document.querySelectorAll('#fixturesFilterTabs .fixtures-tab-btn');
@@ -1196,6 +1244,7 @@
           if (val) {
             navigator.clipboard.writeText(val);
             copyViewer.textContent = '✅ Copied!';
+            if (window.kabaddiUI) window.kabaddiUI.showToast('📋 Copied Public Spectator Link!', 'info');
             setTimeout(() => { copyViewer.textContent = '📋 Copy'; }, 2000);
           }
         });
@@ -1208,6 +1257,7 @@
           if (val) {
             navigator.clipboard.writeText(val);
             copyScorer.textContent = '✅ Copied!';
+            if (window.kabaddiUI) window.kabaddiUI.showToast('👑 Copied Official Scorer Link!', 'super');
             setTimeout(() => { copyScorer.textContent = '📋 Copy'; }, 2000);
           }
         });
