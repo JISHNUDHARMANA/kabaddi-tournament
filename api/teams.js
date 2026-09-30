@@ -43,6 +43,8 @@ const defaultTeams = [
   }
 ];
 
+let cachedTeams = null;
+
 module.exports = (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -52,5 +54,17 @@ module.exports = (req, res) => {
     return res.status(200).end();
   }
 
-  return res.status(200).json(defaultTeams);
+  if (req.method === 'POST') {
+    try {
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+      if (body.teams) {
+        cachedTeams = body.teams;
+      }
+      return res.status(200).json({ success: true, count: cachedTeams ? cachedTeams.length : 0 });
+    } catch (e) {
+      return res.status(200).json({ success: true });
+    }
+  }
+
+  return res.status(200).json(cachedTeams || defaultTeams);
 };

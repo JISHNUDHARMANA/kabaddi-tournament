@@ -7,6 +7,8 @@ const defaultStandings = [
   { rank: 6, team: "Tamil Thalas", played: 4, won: 1, lost: 3, tied: 0, scoreDiff: "-28", points: 5, form: ["L", "L", "W", "L"] }
 ];
 
+let cachedStandings = null;
+
 module.exports = (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -16,5 +18,17 @@ module.exports = (req, res) => {
     return res.status(200).end();
   }
 
-  return res.status(200).json(defaultStandings);
+  if (req.method === 'POST') {
+    try {
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+      if (body.standings) {
+        cachedStandings = body.standings;
+      }
+      return res.status(200).json({ success: true, count: cachedStandings ? cachedStandings.length : 0 });
+    } catch (e) {
+      return res.status(200).json({ success: true });
+    }
+  }
+
+  return res.status(200).json(cachedStandings || defaultStandings);
 };

@@ -631,7 +631,9 @@
           <p>Official match timetable, court assignments, and live scoreboard links.</p>
         </div>
         <div class="page-hero-actions">
-          <button class="btn btn-primary btn-tiny" data-goto-view="live">⚡ Watch Active Match</button>
+          <button class="btn btn-primary btn-tiny" id="btnAddFixtureBtn">➕ Add Match</button>
+          <button class="btn btn-outline-gold btn-tiny" id="btnResetFixturesBtn" title="Reset all fixtures to default schedule">🔄 Reset</button>
+          <button class="btn btn-secondary btn-tiny" data-goto-view="live">⚡ Watch Live</button>
         </div>
       </div>
 
@@ -662,6 +664,9 @@
           <p>Live rankings, match statistics, score differentials, and recent form.</p>
         </div>
         <div class="page-hero-actions">
+          <button class="btn btn-primary btn-tiny" id="btnAddStandingBtn">➕ Add Team Row</button>
+          <button class="btn btn-outline-gold btn-tiny" id="btnRecalcStandingsBtn" title="Auto-recalculate table from completed fixtures">⚡ Auto-Calculate</button>
+          <button class="btn btn-outline-gold btn-tiny" id="btnResetStandingsBtn" title="Reset to original table">🔄 Reset</button>
           <button class="btn btn-secondary btn-tiny" data-goto-view="fixtures">📅 View Schedule</button>
         </div>
       </div>
@@ -681,6 +686,7 @@
                   <th title="Score Difference">Diff</th>
                   <th title="Total Tournament Points">PTS</th>
                   <th>Form</th>
+                  <th style="width: 100px; text-align: center;">Actions</th>
                 </tr>
               </thead>
               <tbody id="standingsTableBody">
@@ -704,6 +710,8 @@
           <p>Official 7-player court lineups, substitutes bench, captains, and coaches.</p>
         </div>
         <div class="page-hero-actions">
+          <button class="btn btn-primary btn-tiny" id="btnAddTeamBtn">➕ Add New Team</button>
+          <button class="btn btn-outline-gold btn-tiny" id="btnResetTeamsBtn" title="Reset all teams to defaults">🔄 Reset Teams</button>
           <button class="btn btn-outline-gold btn-tiny" data-goto-view="live">⚡ Go to Scoreboard</button>
         </div>
       </div>
@@ -1454,6 +1462,231 @@
         <div class="modal-footer">
           <button class="btn btn-secondary" id="cancelChangeCredsBtn">Cancel</button>
           <button class="btn btn-primary" id="saveChangeCredsBtn">💾 Save New Credentials</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 11: Edit / Add Match Fixture -->
+    <div class="modal-backdrop hidden" id="modalEditFixture">
+      <div class="modal-dialog modal-small">
+        <div class="modal-header">
+          <h3>
+            <span>📅</span>
+            <span id="fixtureModalTitle">EDIT MATCH FIXTURE</span>
+          </h3>
+          <button class="modal-close-btn" id="btnCloseFixtureModal">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" id="editFixtureId">
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Match Number:</label>
+              <input type="number" id="editFixtureMatchNum" class="form-input" min="1" value="1" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Stage / Round:</label>
+              <input type="text" id="editFixtureStage" class="form-input" placeholder="e.g. League Match, Quarter Final" style="width: 100%;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: #FF6B00; display: block; margin-bottom: 4px;">Team A Name:</label>
+              <input type="text" id="editFixtureTeamA" class="form-input" placeholder="e.g. Patna Warriors" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: #00B4D8; display: block; margin-bottom: 4px;">Team B Name:</label>
+              <input type="text" id="editFixtureTeamB" class="form-input" placeholder="e.g. Bengal Tigers" style="width: 100%;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Date:</label>
+              <input type="text" id="editFixtureDate" class="form-input" placeholder="e.g. Tomorrow or Oct 1" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Time:</label>
+              <input type="text" id="editFixtureTime" class="form-input" placeholder="e.g. 09:30 AM" style="width: 100%;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Court / Arena:</label>
+              <input type="text" id="editFixtureCourt" class="form-input" placeholder="e.g. Mat 1" value="Mat 1" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Match Status:</label>
+              <select id="editFixtureStatus" class="form-input" style="width: 100%; height: 38px;">
+                <option value="upcoming">Upcoming</option>
+                <option value="live">🔴 Live Now</option>
+                <option value="completed">Completed / Final</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Team A Score:</label>
+              <input type="number" id="editFixtureScoreA" class="form-input" min="0" value="0" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Team B Score:</label>
+              <input type="number" id="editFixtureScoreB" class="form-input" min="0" value="0" style="width: 100%;">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="display: flex; justify-content: space-between;">
+          <button class="btn btn-danger btn-tiny" id="btnDeleteFixture">🗑️ Delete</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" id="btnCancelFixture">Cancel</button>
+            <button class="btn btn-primary" id="btnSaveFixture">💾 Save Fixture</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 12: Edit / Add Standings Row -->
+    <div class="modal-backdrop hidden" id="modalEditStanding">
+      <div class="modal-dialog modal-small">
+        <div class="modal-header">
+          <h3>
+            <span>🏆</span>
+            <span id="standingModalTitle">EDIT TEAM POINTS & STANDINGS</span>
+          </h3>
+          <button class="modal-close-btn" id="btnCloseStandingModal">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" id="editStandingIndex">
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--accent-gold); display: block; margin-bottom: 4px;">Team Name:</label>
+              <input type="text" id="editStandingName" class="form-input" placeholder="e.g. Patna Warriors" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Short Code:</label>
+              <input type="text" id="editStandingShort" class="form-input" placeholder="e.g. PAT" maxlength="5" style="width: 100%;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Played (P):</label>
+              <input type="number" id="editStandingP" class="form-input" min="0" value="0" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; font-weight: 700; color: #10B981; display: block; margin-bottom: 4px;">Won (W):</label>
+              <input type="number" id="editStandingW" class="form-input" min="0" value="0" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; font-weight: 700; color: #EF4444; display: block; margin-bottom: 4px;">Lost (L):</label>
+              <input type="number" id="editStandingL" class="form-input" min="0" value="0" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; font-weight: 700; color: #F59E0B; display: block; margin-bottom: 4px;">Tied (T):</label>
+              <input type="number" id="editStandingT" class="form-input" min="0" value="0" style="width: 100%;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Score Difference (Diff):</label>
+              <input type="number" id="editStandingDiff" class="form-input" value="0" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--accent-gold); display: block; margin-bottom: 4px;">Total Points (PTS):</label>
+              <input type="number" id="editStandingPts" class="form-input" min="0" value="0" style="width: 100%;">
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Recent Form (comma-separated, e.g. W, W, L, T):</label>
+            <input type="text" id="editStandingForm" class="form-input" placeholder="e.g. W, W, L" style="width: 100%;">
+          </div>
+        </div>
+
+        <div class="modal-footer" style="display: flex; justify-content: space-between;">
+          <button class="btn btn-danger btn-tiny" id="btnDeleteStanding">🗑️ Remove Row</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" id="btnCancelStanding">Cancel</button>
+            <button class="btn btn-primary" id="btnSaveStanding">💾 Save Row</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 13: Edit / Add Team & Squad -->
+    <div class="modal-backdrop hidden" id="modalEditTeam">
+      <div class="modal-dialog modal-large">
+        <div class="modal-header">
+          <h3>
+            <span>👥</span>
+            <span id="teamModalTitle">EDIT TEAM & SQUAD ROSTER</span>
+          </h3>
+          <button class="modal-close-btn" id="btnCloseTeamModal">&times;</button>
+        </div>
+
+        <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+          <input type="hidden" id="editTeamOriginalName">
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--accent-gold); display: block; margin-bottom: 4px;">Team Name:</label>
+              <input type="text" id="editTeamName" class="form-input" placeholder="e.g. Patna Warriors" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">City / State:</label>
+              <input type="text" id="editTeamCity" class="form-input" placeholder="e.g. Patna" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Team Color:</label>
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <input type="color" id="editTeamColorPicker" value="#FF6B00" style="width: 40px; height: 38px; border: none; background: transparent; cursor: pointer;">
+                <input type="text" id="editTeamColor" class="form-input" value="#FF6B00" style="width: calc(100% - 46px);">
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Team Captain:</label>
+              <input type="text" id="editTeamCaptain" class="form-input" placeholder="e.g. Sachin Tanwar" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Head Coach:</label>
+              <input type="text" id="editTeamCoach" class="form-input" placeholder="e.g. Ram Mehar Singh" style="width: 100%;">
+            </div>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <span>On-Court Starting 7 Players:</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 400;">Format: Jersey, Name, Role (one per line)</span>
+            </label>
+            <textarea id="editTeamPlayers" class="form-input" rows="7" style="width: 100%; font-family: monospace; font-size: 0.82rem; line-height: 1.5;" placeholder="1, Sachin Tanwar, Raider&#10;2, Manjeet Dahiya, Raider&#10;3, Neeraj Kumar, Defender&#10;4, Sunil Kumar, Defender&#10;5, Mohit Goyat, All-Rounder&#10;6, Sajin C., Defender&#10;7, Shubham Shinde, Defender"></textarea>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 0.85rem; font-weight: 800; color: var(--text-muted); display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <span>Substitutes Bench (3 Players):</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 400;">Format: Jersey, Name, Role (one per line)</span>
+            </label>
+            <textarea id="editTeamSubs" class="form-input" rows="3" style="width: 100%; font-family: monospace; font-size: 0.82rem; line-height: 1.5;" placeholder="21, Rohit Gulia, Raider&#10;22, Monu Goyat, Raider&#10;24, Vikas Jaglan, All-Rounder"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="display: flex; justify-content: space-between;">
+          <button class="btn btn-danger btn-tiny" id="btnDeleteTeam">🗑️ Delete Team</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" id="btnCancelTeam">Cancel</button>
+            <button class="btn btn-primary" id="btnSaveTeam">💾 Save Team & Squad</button>
+          </div>
         </div>
       </div>
     </div>

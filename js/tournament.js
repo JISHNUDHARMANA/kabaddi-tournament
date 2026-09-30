@@ -18,6 +18,7 @@
     async init() {
       this.setupNavigation();
       await this.loadInitialData();
+      this.wireEditModalsAndActions();
       this.renderAllViews();
       this.checkUrlView();
     }
@@ -226,12 +227,14 @@
             <span>🏟️ ${f.court}</span>
           </div>
 
-          <div class="fixture-actions">
+          <div class="fixture-actions" style="display: flex; gap: 6px; flex-wrap: wrap;">
             ${isLive 
-              ? `<button class="btn btn-primary btn-tiny" style="width:100%;" data-action="go-live">⚡ Watch Live Scoreboard</button>`
-              : `<button class="btn btn-outline-gold btn-tiny" data-action="load-match" data-id="${f.id}">▶ Load in Scoreboard</button>
+              ? `<button class="btn btn-primary btn-tiny" style="flex:1;" data-action="go-live">⚡ Watch Live</button>`
+              : `<button class="btn btn-outline-gold btn-tiny" style="flex:1;" data-action="load-match" data-id="${f.id}">▶ Load</button>
                  <button class="btn btn-secondary btn-tiny" data-action="go-live">Scoreboard</button>`
             }
+            <button class="btn btn-outline-gold btn-tiny" data-action="edit-fixture" data-id="${f.id}" title="Edit Match Fixture">✏️ Edit</button>
+            <button class="btn btn-danger btn-tiny" data-action="delete-fixture" data-id="${f.id}" title="Delete Match">🗑️</button>
           </div>
         `;
 
@@ -247,6 +250,25 @@
         if (loadMatchBtn) {
           loadMatchBtn.addEventListener('click', () => {
             this.loadFixtureIntoScoreboard(f);
+          });
+        }
+
+        const editBtn = card.querySelector('[data-action="edit-fixture"]');
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            this.openEditFixtureModal(f);
+          });
+        }
+
+        const delBtn = card.querySelector('[data-action="delete-fixture"]');
+        if (delBtn) {
+          delBtn.addEventListener('click', () => {
+            if (confirm(`Delete Match #${f.matchNumber} (${f.teamA} vs ${f.teamB})?`)) {
+              this.fixtures = this.fixtures.filter(item => item.id !== f.id);
+              this.persistFixtures();
+              this.renderFixtures();
+              if (window.kabaddiUI) window.kabaddiUI.showToast(`🗑️ Match #${f.matchNumber} deleted`, 'info');
+            }
           });
         }
 
@@ -296,6 +318,24 @@
       }).catch(() => {});
     }
 
+    persistStandings() {
+      localStorage.setItem('KABADDI_TOURNAMENT_STANDINGS', JSON.stringify(this.standings));
+      fetch('/api/standings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ standings: this.standings })
+      }).catch(() => {});
+    }
+
+    persistTeams() {
+      localStorage.setItem('KABADDI_TOURNAMENT_TEAMS', JSON.stringify(this.teams));
+      fetch('/api/teams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ teams: this.teams })
+      }).catch(() => {});
+    }
+
     // -------------------------------------------------------------
     // STANDINGS / POINTS TABLE RENDERER
     // -------------------------------------------------------------
@@ -338,7 +378,29 @@
           <td><strong>${item.scoreDiff > 0 ? `+${item.scoreDiff}` : item.scoreDiff}</strong></td>
           <td><span class="pts-highlight">${item.points}</span></td>
           <td><div class="form-pill-group">${formHtml}</div></td>
+          <td style="text-align: center; white-space: nowrap;">
+            <button class="btn btn-outline-gold btn-tiny" data-action="edit-standing" data-name="${item.name}" title="Edit Team Standing">✏️ Edit</button>
+            <button class="btn btn-danger btn-tiny" data-action="delete-standing" data-name="${item.name}" title="Remove Row">🗑️</button>
+          </td>
         `;
+
+        tr.querySelector('[data-action="edit-standing"]').addEventListener('click', () => {
+          const realIdx = this.standings.findIndex(s => s.name.toLowerCase() === item.name.toLowerCase());
+          this.openEditStandingModal(realIdx !== -1 ? realIdx : index);
+        });
+
+        tr.querySelector('[data-action="delete-standing"]').addEventListener('click', () => {
+          if (confirm(`Remove "${item.name}" from points table?`)) {
+            const origIdx = this.standings.findIndex(s => s.name.toLowerCase() === item.name.toLowerCase());
+            if (origIdx !== -1) {
+              this.standings.splice(origIdx, 1);
+              this.persistStandings();
+              this.renderStandings();
+              if (window.kabaddiUI) window.kabaddiUI.showToast(`🗑️ Removed ${item.name}`, 'info');
+            }
+          }
+        });
+
         tbody.appendChild(tr);
       });
     }
@@ -399,9 +461,11 @@
             </div>
           </div>
 
-          <div class="team-card-actions">
-            <button class="btn btn-secondary btn-tiny" data-action="load-team-a" data-name="${team.name}">⚔️ Load as Team A</button>
-            <button class="btn btn-secondary btn-tiny" data-action="load-team-b" data-name="${team.name}">🛡️ Load as Team B</button>
+          <div class="team-card-actions" style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button class="btn btn-secondary btn-tiny" data-action="load-team-a" data-name="${team.name}">⚔️ Load Team A</button>
+            <button class="btn btn-secondary btn-tiny" data-action="load-team-b" data-name="${team.name}">🛡️ Load Team B</button>
+            <button class="btn btn-outline-gold btn-tiny" data-action="edit-team" data-name="${team.name}">✏️ Edit Squad</button>
+            <button class="btn btn-danger btn-tiny" data-action="delete-team" data-name="${team.name}" title="Delete Team">🗑️</button>
           </div>
         `;
 
@@ -413,8 +477,525 @@
           this.applyTeamToEngine('teamB', team);
         });
 
+        card.querySelector('[data-action="edit-team"]').addEventListener('click', () => {
+          this.openEditTeamModal(team);
+        });
+
+        card.querySelector('[data-action="delete-team"]').addEventListener('click', () => {
+          if (confirm(`Delete team "${team.name}" and their squad?`)) {
+            this.teams = this.teams.filter(t => t.name.toLowerCase() !== team.name.toLowerCase());
+            this.persistTeams();
+            this.renderTeams();
+            if (window.kabaddiUI) window.kabaddiUI.showToast(`🗑️ Team "${team.name}" deleted`, 'info');
+          }
+        });
+
         container.appendChild(card);
       });
+    }
+
+    // -------------------------------------------------------------
+    // MODAL DIALOGS & USER EDITING ACTIONS FOR 3 SECTIONS
+    // -------------------------------------------------------------
+    openEditFixtureModal(fixture = null) {
+      const modal = document.getElementById('modalEditFixture');
+      if (!modal) return;
+
+      const titleElem = document.getElementById('fixtureModalTitle');
+      const idInput = document.getElementById('editFixtureId');
+      const matchNum = document.getElementById('editFixtureMatchNum');
+      const stage = document.getElementById('editFixtureStage');
+      const teamA = document.getElementById('editFixtureTeamA');
+      const teamB = document.getElementById('editFixtureTeamB');
+      const date = document.getElementById('editFixtureDate');
+      const time = document.getElementById('editFixtureTime');
+      const court = document.getElementById('editFixtureCourt');
+      const status = document.getElementById('editFixtureStatus');
+      const scoreA = document.getElementById('editFixtureScoreA');
+      const scoreB = document.getElementById('editFixtureScoreB');
+      const deleteBtn = document.getElementById('btnDeleteFixture');
+
+      if (fixture) {
+        if (titleElem) titleElem.textContent = `EDIT MATCH #${fixture.matchNumber}`;
+        if (idInput) idInput.value = fixture.id;
+        if (matchNum) matchNum.value = fixture.matchNumber || 1;
+        if (stage) stage.value = fixture.stage || 'League Match';
+        if (teamA) teamA.value = fixture.teamA || '';
+        if (teamB) teamB.value = fixture.teamB || '';
+        if (date) date.value = fixture.date || 'Tomorrow';
+        if (time) time.value = fixture.time || '10:00 AM';
+        if (court) court.value = fixture.court || 'Mat 1';
+        if (status) status.value = fixture.status || 'upcoming';
+        if (scoreA) scoreA.value = fixture.scoreA || 0;
+        if (scoreB) scoreB.value = fixture.scoreB || 0;
+        if (deleteBtn) deleteBtn.style.display = 'inline-block';
+      } else {
+        if (titleElem) titleElem.textContent = '➕ ADD NEW MATCH FIXTURE';
+        if (idInput) idInput.value = '';
+        const nextNum = (this.fixtures.length > 0 ? Math.max(...this.fixtures.map(f => f.matchNumber || 0)) + 1 : 1);
+        if (matchNum) matchNum.value = nextNum;
+        if (stage) stage.value = 'League Match';
+        if (teamA) teamA.value = (this.teams[0] ? this.teams[0].name : 'Patna Warriors');
+        if (teamB) teamB.value = (this.teams[1] ? this.teams[1].name : 'Bengal Tigers');
+        if (date) date.value = 'Tomorrow';
+        if (time) time.value = '10:00 AM';
+        if (court) court.value = 'Mat 1';
+        if (status) status.value = 'upcoming';
+        if (scoreA) scoreA.value = 0;
+        if (scoreB) scoreB.value = 0;
+        if (deleteBtn) deleteBtn.style.display = 'none';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    closeEditFixtureModal() {
+      document.getElementById('modalEditFixture')?.classList.add('hidden');
+    }
+
+    saveFixtureFromModal() {
+      const idInput = document.getElementById('editFixtureId')?.value;
+      const matchNum = parseInt(document.getElementById('editFixtureMatchNum')?.value || 1, 10);
+      const stage = document.getElementById('editFixtureStage')?.value.trim() || 'League Match';
+      const teamA = document.getElementById('editFixtureTeamA')?.value.trim() || 'Team A';
+      const teamB = document.getElementById('editFixtureTeamB')?.value.trim() || 'Team B';
+      const date = document.getElementById('editFixtureDate')?.value.trim() || 'Tomorrow';
+      const time = document.getElementById('editFixtureTime')?.value.trim() || '10:00 AM';
+      const court = document.getElementById('editFixtureCourt')?.value.trim() || 'Mat 1';
+      const status = document.getElementById('editFixtureStatus')?.value || 'upcoming';
+      const scoreA = parseInt(document.getElementById('editFixtureScoreA')?.value || 0, 10);
+      const scoreB = parseInt(document.getElementById('editFixtureScoreB')?.value || 0, 10);
+
+      if (!teamA || !teamB) {
+        alert('Please enter names for both Team A and Team B');
+        return;
+      }
+
+      if (idInput) {
+        const idx = this.fixtures.findIndex(f => f.id === idInput);
+        if (idx !== -1) {
+          this.fixtures[idx] = {
+            ...this.fixtures[idx],
+            matchNumber: matchNum,
+            stage,
+            teamA,
+            teamB,
+            date,
+            time,
+            court,
+            status,
+            scoreA,
+            scoreB
+          };
+        }
+      } else {
+        this.fixtures.push({
+          id: 'fixture_' + Date.now(),
+          matchNumber: matchNum,
+          stage,
+          court,
+          time,
+          date,
+          teamA,
+          teamB,
+          status,
+          scoreA,
+          scoreB
+        });
+      }
+
+      this.persistFixtures();
+      this.renderFixtures();
+      this.closeEditFixtureModal();
+      if (window.kabaddiUI) window.kabaddiUI.showToast(`✅ Fixture Match #${matchNum} saved!`, 'super');
+    }
+
+    deleteFixtureFromModal() {
+      const idInput = document.getElementById('editFixtureId')?.value;
+      if (!idInput) return;
+      if (confirm('Are you sure you want to delete this match fixture?')) {
+        this.fixtures = this.fixtures.filter(f => f.id !== idInput);
+        this.persistFixtures();
+        this.renderFixtures();
+        this.closeEditFixtureModal();
+        if (window.kabaddiUI) window.kabaddiUI.showToast('🗑️ Fixture deleted', 'info');
+      }
+    }
+
+    openEditStandingModal(index) {
+      const modal = document.getElementById('modalEditStanding');
+      if (!modal) return;
+
+      const titleElem = document.getElementById('standingModalTitle');
+      const indexInput = document.getElementById('editStandingIndex');
+      const name = document.getElementById('editStandingName');
+      const short = document.getElementById('editStandingShort');
+      const p = document.getElementById('editStandingP');
+      const w = document.getElementById('editStandingW');
+      const l = document.getElementById('editStandingL');
+      const t = document.getElementById('editStandingT');
+      const diff = document.getElementById('editStandingDiff');
+      const pts = document.getElementById('editStandingPts');
+      const form = document.getElementById('editStandingForm');
+      const deleteBtn = document.getElementById('btnDeleteStanding');
+
+      if (index >= 0 && index < this.standings.length) {
+        const item = this.standings[index];
+        if (titleElem) titleElem.textContent = `EDIT STANDINGS: ${item.name.toUpperCase()}`;
+        if (indexInput) indexInput.value = index;
+        if (name) name.value = item.name || '';
+        if (short) short.value = item.short || (item.name ? item.name.substring(0, 3).toUpperCase() : 'KAB');
+        if (p) p.value = item.played ?? 0;
+        if (w) w.value = item.won ?? 0;
+        if (l) l.value = item.lost ?? 0;
+        if (t) t.value = item.tied ?? 0;
+        if (diff) diff.value = item.scoreDiff ?? 0;
+        if (pts) pts.value = item.points ?? 0;
+        if (form) form.value = (item.form || []).join(', ');
+        if (deleteBtn) deleteBtn.style.display = 'inline-block';
+      } else {
+        if (titleElem) titleElem.textContent = '➕ ADD TEAM TO POINTS TABLE';
+        if (indexInput) indexInput.value = -1;
+        if (name) name.value = '';
+        if (short) short.value = '';
+        if (p) p.value = 0;
+        if (w) w.value = 0;
+        if (l) l.value = 0;
+        if (t) t.value = 0;
+        if (diff) diff.value = 0;
+        if (pts) pts.value = 0;
+        if (form) form.value = '';
+        if (deleteBtn) deleteBtn.style.display = 'none';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    closeEditStandingModal() {
+      document.getElementById('modalEditStanding')?.classList.add('hidden');
+    }
+
+    saveStandingFromModal() {
+      const index = parseInt(document.getElementById('editStandingIndex')?.value ?? -1, 10);
+      const name = document.getElementById('editStandingName')?.value.trim();
+      const short = (document.getElementById('editStandingShort')?.value.trim() || (name ? name.substring(0, 3) : 'KAB')).toUpperCase();
+      const played = parseInt(document.getElementById('editStandingP')?.value || 0, 10);
+      const won = parseInt(document.getElementById('editStandingW')?.value || 0, 10);
+      const lost = parseInt(document.getElementById('editStandingL')?.value || 0, 10);
+      const tied = parseInt(document.getElementById('editStandingT')?.value || 0, 10);
+      const scoreDiff = parseInt(document.getElementById('editStandingDiff')?.value || 0, 10);
+      const points = parseInt(document.getElementById('editStandingPts')?.value || 0, 10);
+      const formStr = document.getElementById('editStandingForm')?.value || '';
+      const form = formStr.split(',').map(s => s.trim().toUpperCase()).filter(s => ['W', 'L', 'T', 'D'].includes(s));
+
+      if (!name) {
+        alert('Please enter a team name');
+        return;
+      }
+
+      const row = {
+        rank: 1,
+        name,
+        short,
+        played,
+        won,
+        lost,
+        tied,
+        scoreDiff,
+        points,
+        form
+      };
+
+      if (index >= 0 && index < this.standings.length) {
+        this.standings[index] = { ...this.standings[index], ...row };
+      } else {
+        this.standings.push(row);
+      }
+
+      this.persistStandings();
+      this.renderStandings();
+      this.closeEditStandingModal();
+      if (window.kabaddiUI) window.kabaddiUI.showToast(`🏆 Points table updated for ${name}!`, 'super');
+    }
+
+    deleteStandingFromModal() {
+      const index = parseInt(document.getElementById('editStandingIndex')?.value ?? -1, 10);
+      if (index >= 0 && index < this.standings.length) {
+        if (confirm(`Remove "${this.standings[index].name}" from points table?`)) {
+          this.standings.splice(index, 1);
+          this.persistStandings();
+          this.renderStandings();
+          this.closeEditStandingModal();
+          if (window.kabaddiUI) window.kabaddiUI.showToast('🗑️ Row removed from points table', 'info');
+        }
+      }
+    }
+
+    recalcStandingsFromFixtures() {
+      const completed = this.fixtures.filter(f => f.status === 'completed');
+      if (completed.length === 0) {
+        if (window.kabaddiUI) window.kabaddiUI.showToast('ℹ️ No completed matches found to auto-calculate.', 'info');
+        return;
+      }
+
+      const tableMap = {};
+      this.teams.forEach(t => {
+        tableMap[t.name.toLowerCase()] = {
+          name: t.name,
+          short: t.name.substring(0, 3).toUpperCase(),
+          played: 0,
+          won: 0,
+          lost: 0,
+          tied: 0,
+          scoreDiff: 0,
+          points: 0,
+          form: []
+        };
+      });
+
+      completed.forEach(f => {
+        const keyA = f.teamA.toLowerCase();
+        const keyB = f.teamB.toLowerCase();
+        if (!tableMap[keyA]) tableMap[keyA] = { name: f.teamA, short: f.teamA.substring(0, 3).toUpperCase(), played: 0, won: 0, lost: 0, tied: 0, scoreDiff: 0, points: 0, form: [] };
+        if (!tableMap[keyB]) tableMap[keyB] = { name: f.teamB, short: f.teamB.substring(0, 3).toUpperCase(), played: 0, won: 0, lost: 0, tied: 0, scoreDiff: 0, points: 0, form: [] };
+
+        const scoreA = f.scoreA || 0;
+        const scoreB = f.scoreB || 0;
+        const diff = scoreA - scoreB;
+
+        tableMap[keyA].played++;
+        tableMap[keyB].played++;
+        tableMap[keyA].scoreDiff += diff;
+        tableMap[keyB].scoreDiff -= diff;
+
+        if (scoreA > scoreB) {
+          tableMap[keyA].won++;
+          tableMap[keyA].points += 5;
+          tableMap[keyA].form.push('W');
+
+          tableMap[keyB].lost++;
+          if (Math.abs(diff) <= 7) tableMap[keyB].points += 1;
+          tableMap[keyB].form.push('L');
+        } else if (scoreB > scoreA) {
+          tableMap[keyB].won++;
+          tableMap[keyB].points += 5;
+          tableMap[keyB].form.push('W');
+
+          tableMap[keyA].lost++;
+          if (Math.abs(diff) <= 7) tableMap[keyA].points += 1;
+          tableMap[keyA].form.push('L');
+        } else {
+          tableMap[keyA].tied++;
+          tableMap[keyA].points += 3;
+          tableMap[keyA].form.push('T');
+
+          tableMap[keyB].tied++;
+          tableMap[keyB].points += 3;
+          tableMap[keyB].form.push('T');
+        }
+      });
+
+      this.standings = Object.values(tableMap);
+      this.persistStandings();
+      this.renderStandings();
+      if (window.kabaddiUI) window.kabaddiUI.showToast('⚡ Standings auto-calculated from completed matches!', 'super');
+    }
+
+    openEditTeamModal(team = null) {
+      const modal = document.getElementById('modalEditTeam');
+      if (!modal) return;
+
+      const titleElem = document.getElementById('teamModalTitle');
+      const origName = document.getElementById('editTeamOriginalName');
+      const name = document.getElementById('editTeamName');
+      const city = document.getElementById('editTeamCity');
+      const color = document.getElementById('editTeamColor');
+      const picker = document.getElementById('editTeamColorPicker');
+      const captain = document.getElementById('editTeamCaptain');
+      const coach = document.getElementById('editTeamCoach');
+      const players = document.getElementById('editTeamPlayers');
+      const subs = document.getElementById('editTeamSubs');
+      const deleteBtn = document.getElementById('btnDeleteTeam');
+
+      if (team) {
+        if (titleElem) titleElem.textContent = `EDIT TEAM: ${team.name.toUpperCase()}`;
+        if (origName) origName.value = team.name;
+        if (name) name.value = team.name || '';
+        if (city) city.value = team.city || '';
+        if (color) color.value = team.color || '#FF6B00';
+        if (picker) picker.value = team.color || '#FF6B00';
+        if (captain) captain.value = team.captain || '';
+        if (coach) coach.value = team.coach || '';
+
+        const pLines = (team.players || []).map(p => `${p.jersey}, ${p.name}, ${p.role}`).join('\n');
+        if (players) players.value = pLines;
+
+        const sLines = (team.substitutes || []).map(p => `${p.jersey}, ${p.name}, ${p.role}`).join('\n');
+        if (subs) subs.value = sLines;
+
+        if (deleteBtn) deleteBtn.style.display = 'inline-block';
+      } else {
+        if (titleElem) titleElem.textContent = '➕ ADD NEW TEAM & SQUAD';
+        if (origName) origName.value = '';
+        if (name) name.value = '';
+        if (city) city.value = '';
+        if (color) color.value = '#10B981';
+        if (picker) picker.value = '#10B981';
+        if (captain) captain.value = '';
+        if (coach) coach.value = '';
+        if (players) players.value = '1, Raider One, Raider\n2, Raider Two, Raider\n3, Defender Left, Defender\n4, Defender Right, Defender\n5, All-Rounder Main, All-Rounder\n6, Corner Left, Defender\n7, Corner Right, Defender';
+        if (subs) subs.value = '11, Sub Raider, Raider\n12, Sub Defender, Defender\n13, Sub All-Rounder, All-Rounder';
+        if (deleteBtn) deleteBtn.style.display = 'none';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    closeEditTeamModal() {
+      document.getElementById('modalEditTeam')?.classList.add('hidden');
+    }
+
+    parseRosterText(text, isCaptainFirst = false) {
+      if (!text) return [];
+      return text.split('\n').map((line, idx) => {
+        const parts = line.split(',').map(s => s.trim());
+        if (parts.length >= 2 && parts[1]) {
+          return {
+            jersey: parts[0] || String(idx + 1),
+            name: parts[1],
+            role: parts[2] || 'All-Rounder',
+            isCaptain: isCaptainFirst && idx === 0
+          };
+        }
+        return null;
+      }).filter(Boolean);
+    }
+
+    saveTeamFromModal() {
+      const origName = document.getElementById('editTeamOriginalName')?.value;
+      const name = document.getElementById('editTeamName')?.value.trim();
+      const city = document.getElementById('editTeamCity')?.value.trim() || 'Championship';
+      const color = document.getElementById('editTeamColor')?.value.trim() || '#FF6B00';
+      const captain = document.getElementById('editTeamCaptain')?.value.trim() || '';
+      const coach = document.getElementById('editTeamCoach')?.value.trim() || '';
+      const playersText = document.getElementById('editTeamPlayers')?.value || '';
+      const subsText = document.getElementById('editTeamSubs')?.value || '';
+
+      if (!name) {
+        alert('Please enter a team name');
+        return;
+      }
+
+      const players = this.parseRosterText(playersText, true);
+      const substitutes = this.parseRosterText(subsText, false);
+
+      const teamData = {
+        name,
+        city,
+        color,
+        captain: captain || (players[0] ? players[0].name : 'N/A'),
+        coach,
+        players: players.length > 0 ? players : this.getDefaultPlayersForTeam(),
+        substitutes
+      };
+
+      if (origName) {
+        const idx = this.teams.findIndex(t => t.name.toLowerCase() === origName.toLowerCase());
+        if (idx !== -1) {
+          this.teams[idx] = teamData;
+        } else {
+          this.teams.push(teamData);
+        }
+      } else {
+        this.teams.push(teamData);
+      }
+
+      this.persistTeams();
+      this.renderTeams();
+      this.closeEditTeamModal();
+      if (window.kabaddiUI) window.kabaddiUI.showToast(`👥 Team "${name}" & Squad saved!`, 'super');
+    }
+
+    deleteTeamFromModal() {
+      const origName = document.getElementById('editTeamOriginalName')?.value;
+      if (!origName) return;
+      if (confirm(`Are you sure you want to delete team "${origName}"?`)) {
+        this.teams = this.teams.filter(t => t.name.toLowerCase() !== origName.toLowerCase());
+        this.persistTeams();
+        this.renderTeams();
+        this.closeEditTeamModal();
+        if (window.kabaddiUI) window.kabaddiUI.showToast(`🗑️ Team deleted`, 'info');
+      }
+    }
+
+    getDefaultPlayersForTeam() {
+      return [
+        { jersey: "1", name: "Player 1", role: "Raider", isCaptain: true },
+        { jersey: "2", name: "Player 2", role: "Raider" },
+        { jersey: "3", name: "Player 3", role: "Defender" },
+        { jersey: "4", name: "Player 4", role: "Defender" },
+        { jersey: "5", name: "Player 5", role: "All-Rounder" },
+        { jersey: "6", name: "Player 6", role: "Defender" },
+        { jersey: "7", name: "Player 7", role: "Defender" }
+      ];
+    }
+
+    wireEditModalsAndActions() {
+      // 1. Fixture Modal Wiring
+      document.getElementById('btnAddFixtureBtn')?.addEventListener('click', () => this.openEditFixtureModal(null));
+      document.getElementById('btnCloseFixtureModal')?.addEventListener('click', () => this.closeEditFixtureModal());
+      document.getElementById('btnCancelFixture')?.addEventListener('click', () => this.closeEditFixtureModal());
+      document.getElementById('btnSaveFixture')?.addEventListener('click', () => this.saveFixtureFromModal());
+      document.getElementById('btnDeleteFixture')?.addEventListener('click', () => this.deleteFixtureFromModal());
+      document.getElementById('btnResetFixturesBtn')?.addEventListener('click', () => {
+        if (confirm('Reset all match fixtures to the default tournament schedule?')) {
+          this.fixtures = this.getDefaultFixtures();
+          this.persistFixtures();
+          this.renderFixtures();
+          if (window.kabaddiUI) window.kabaddiUI.showToast('🔄 Fixtures reset to default', 'info');
+        }
+      });
+
+      // 2. Standings Modal Wiring
+      document.getElementById('btnAddStandingBtn')?.addEventListener('click', () => this.openEditStandingModal(-1));
+      document.getElementById('btnCloseStandingModal')?.addEventListener('click', () => this.closeEditStandingModal());
+      document.getElementById('btnCancelStanding')?.addEventListener('click', () => this.closeEditStandingModal());
+      document.getElementById('btnSaveStanding')?.addEventListener('click', () => this.saveStandingFromModal());
+      document.getElementById('btnDeleteStanding')?.addEventListener('click', () => this.deleteStandingFromModal());
+      document.getElementById('btnRecalcStandingsBtn')?.addEventListener('click', () => this.recalcStandingsFromFixtures());
+      document.getElementById('btnResetStandingsBtn')?.addEventListener('click', () => {
+        if (confirm('Reset points table to default initial standings?')) {
+          this.standings = this.getDefaultStandings();
+          this.persistStandings();
+          this.renderStandings();
+          if (window.kabaddiUI) window.kabaddiUI.showToast('🔄 Points table reset', 'info');
+        }
+      });
+
+      // 3. Teams Modal Wiring
+      document.getElementById('btnAddTeamBtn')?.addEventListener('click', () => this.openEditTeamModal(null));
+      document.getElementById('btnCloseTeamModal')?.addEventListener('click', () => this.closeEditTeamModal());
+      document.getElementById('btnCancelTeam')?.addEventListener('click', () => this.closeEditTeamModal());
+      document.getElementById('btnSaveTeam')?.addEventListener('click', () => this.saveTeamFromModal());
+      document.getElementById('btnDeleteTeam')?.addEventListener('click', () => this.deleteTeamFromModal());
+      document.getElementById('btnResetTeamsBtn')?.addEventListener('click', () => {
+        if (confirm('Reset all teams & squads to default?')) {
+          this.teams = this.getDefaultTeams();
+          this.persistTeams();
+          this.renderTeams();
+          if (window.kabaddiUI) window.kabaddiUI.showToast('🔄 Teams reset to default', 'info');
+        }
+      });
+
+      // Color picker sync
+      const colorInput = document.getElementById('editTeamColor');
+      const pickerInput = document.getElementById('editTeamColorPicker');
+      if (pickerInput && colorInput) {
+        pickerInput.addEventListener('input', () => { colorInput.value = pickerInput.value; });
+        colorInput.addEventListener('input', () => {
+          if (/^#[0-9A-F]{6}$/i.test(colorInput.value)) pickerInput.value = colorInput.value;
+        });
+      }
     }
 
     applyTeamToEngine(targetKey, team) {

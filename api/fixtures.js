@@ -7,6 +7,8 @@ const defaultFixtures = [
   { id: "fixture_6", matchNumber: 6, stage: "Grand Final", court: "Mat 1", time: "08:15 PM", date: "Tomorrow", teamA: "Finalist 1", teamB: "Finalist 2", status: "upcoming", scoreA: 0, scoreB: 0 }
 ];
 
+let cachedFixtures = null;
+
 module.exports = (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -16,5 +18,17 @@ module.exports = (req, res) => {
     return res.status(200).end();
   }
 
-  return res.status(200).json(defaultFixtures);
+  if (req.method === 'POST') {
+    try {
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+      if (body.fixtures) {
+        cachedFixtures = body.fixtures;
+      }
+      return res.status(200).json({ success: true, count: cachedFixtures ? cachedFixtures.length : 0 });
+    } catch (e) {
+      return res.status(200).json({ success: true });
+    }
+  }
+
+  return res.status(200).json(cachedFixtures || defaultFixtures);
 };
